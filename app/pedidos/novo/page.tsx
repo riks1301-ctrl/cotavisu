@@ -37,30 +37,44 @@ export default function NovoPedidoPage() {
     setAttributes((prev) => ({ ...prev, [key]: value }))
   }
 
-  // Calcula estimativa em m²
+  // Preços de referência por m² ou por unidade
+  const priceRef: Record<string, { value: number; unit: string }> = {
+    "Adesivo Impresso":              { value: 45,  unit: "m²" },
+    "Adesivo Recortado (Plotter)":   { value: 35,  unit: "m²" },
+    "Envelopamento Veicular":        { value: 380, unit: "m²" },
+    "Banner":                        { value: 25,  unit: "m²" },
+    "Lona para Fachada":             { value: 30,  unit: "m²" },
+    "Placa em ACM":                  { value: 280, unit: "m²" },
+    "Placa em PVC":                  { value: 42,  unit: "m²" },
+    "Letra Caixa":                   { value: 180, unit: "unidade" },
+    "Painel Luminoso":               { value: 350, unit: "m²" },
+    "Impressão em Rígido (Direto)":  { value: 55,  unit: "m²" },
+    "Plotagem de Plantas":           { value: 12,  unit: "unidade" },
+    "Impressão em Papel":            { value: 8,   unit: "unidade" },
+  }
+
   function estimatedPrice() {
-    if (!selectedService || !widthCm || !heightCm) return null
+    if (!selectedService) return null
+    const ref = priceRef[selectedService.name]
+    if (!ref) return null
+    const qty = parseInt(quantity) || 1
+
+    if (selectedService.unit === "unit") {
+      const total = qty * ref.value
+      return { total, perUnit: ref.value, unitLabel: "unidade", area: null }
+    }
+
+    if (!widthCm || !heightCm) return null
     const w = parseFloat(widthCm) / 100
     const h = parseFloat(heightCm) / 100
-    const qty = parseInt(quantity) || 1
-    // Preços de referência por serviço
-    const ref: Record<string, number> = {
-      "Adesivo Impresso": 45,
-      "Adesivo Recortado (Plotter)": 35,
-      "Envelopamento Veicular": 380,
-      "Banner": 25,
-      "Lona para Fachada": 30,
-      "Placa em ACM": 280,
-      "Placa em PVC": 42,
-      "Letra Caixa": 180,
-      "Painel Luminoso": 350,
-      "Impressão em Rígido (Direto)": 55,
+    const areaPorUnidade = w * h
+    const total = areaPorUnidade * qty * ref.value
+    return {
+      total,
+      perUnit: areaPorUnidade * ref.value,
+      unitLabel: "m²",
+      area: areaPorUnidade,
     }
-    const basePrice = ref[selectedService.name] ?? 40
-    let price = 0
-    if (selectedService.unit === "cm2") price = w * h * qty * basePrice
-    if (selectedService.unit === "unit") price = qty * basePrice
-    return price.toFixed(2)
   }
 
   async function handleSubmit() {
@@ -340,12 +354,25 @@ export default function NovoPedidoPage() {
               </div>
 
               {price && (
-                <div className="rounded-lg bg-green-50 border border-green-200 p-3">
-                  <p className="text-sm text-green-700">
-                    <span className="font-semibold">Estimativa de referência:</span> R$ {price}
-                    <span className="ml-1 text-xs text-green-500">
-                      (preço médio · {quantity} un · {widthCm}×{heightCm}cm)
+                <div className="rounded-lg bg-green-50 border border-green-200 p-4 space-y-1">
+                  <p className="text-xs text-green-600 font-medium uppercase tracking-wide">
+                    Faixa de preço praticada no mercado
+                  </p>
+                  <p className="text-2xl font-bold text-green-700">
+                    R$ {price.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    <span className="ml-1 text-sm font-normal text-green-600">total estimado</span>
+                  </p>
+                  <div className="flex flex-wrap gap-3 text-xs text-green-700 pt-1">
+                    {price.area !== null && (
+                      <span>📐 {price.area.toFixed(4)} m² por unidade</span>
+                    )}
+                    <span>
+                      💰 R$ {price.perUnit.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} por {price.unitLabel}
                     </span>
+                    <span>📦 {quantity} {parseInt(quantity) === 1 ? "unidade" : "unidades"}</span>
+                  </div>
+                  <p className="text-xs text-green-500 pt-1">
+                    ⚡ Baseado em pedidos similares na sua região · Proposta real pode variar
                   </p>
                 </div>
               )}
@@ -440,9 +467,16 @@ export default function NovoPedidoPage() {
                 <p><span className="text-gray-500">Quantidade:</span> {quantity} {selectedService?.unit === "unit" ? "peça(s)" : "unidade(s)"}</p>
                 {city && <p><span className="text-gray-500">Local:</span> {city}/{state}</p>}
                 {price && (
-                  <p className="text-green-600 font-medium pt-1">
-                    Estimativa: R$ {price}
-                  </p>
+                  <div className="pt-2 border-t mt-2">
+                    <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Faixa de preço do mercado</p>
+                    <p className="text-green-600 font-bold text-lg">
+                      R$ {price.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      <span className="ml-1 text-xs font-normal text-gray-400">
+                        (R$ {price.perUnit.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}/{price.unitLabel})
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-400">Baseado em pedidos similares na região</p>
+                  </div>
                 )}
               </div>
 
