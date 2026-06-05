@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CheckCircle, Clock, Star, TrendingDown, Zap } from "lucide-react";
 import { getCategories, getServiceRequests } from "@/lib/db";
 import { UrgencyBar } from "@/components/urgency-bar";
+import { TrustSection } from "@/components/trust-badges";
 
 export const revalidate = 60
 
@@ -186,6 +187,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Seção de confiança */}
+      <TrustSection />
 
       {/* CTA final */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">

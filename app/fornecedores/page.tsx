@@ -3,7 +3,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { MapPin, Search, Star } from "lucide-react"
+import { MapPin, Search } from "lucide-react"
+import { StarRating, VerifiedBadge } from "@/components/trust-badges"
 
 const suppliers = [
   { id: "f1", name: "GráficaPrint SP", city: "São Paulo", state: "SP", services: ["Banners", "Adesivos", "Plotagem"], rating: 4.8, reviews: 127, isPremium: true, description: "Especialistas em impressão digital de alta qualidade. Entregamos para todo o estado de SP." },
@@ -37,24 +38,22 @@ export default function FornecedoresPage() {
                   {s.name[0]}
                 </div>
                 <div className="flex gap-1">
-                  {s.isPremium && <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 text-xs">Premium</Badge>}
                   {s.reviews === 0 && <Badge variant="outline" className="text-xs">Novo</Badge>}
                 </div>
               </div>
 
-              <h3 className="mb-1 font-semibold">{s.name}</h3>
+              <div className="mb-1 flex items-center gap-2">
+                <h3 className="font-semibold">{s.name}</h3>
+                {s.isPremium && <VerifiedBadge />}
+              </div>
 
               <div className="mb-2 flex items-center gap-1 text-xs text-gray-500">
                 <MapPin className="h-3 w-3" />{s.city}/{s.state}
               </div>
 
-              {s.reviews > 0 && (
-                <div className="mb-2 flex items-center gap-1 text-xs">
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium">{s.rating}</span>
-                  <span className="text-gray-400">({s.reviews} avaliações)</span>
-                </div>
-              )}
+              <div className="mb-2">
+                <StarRating rating={s.rating} reviews={s.reviews} size="sm" />
+              </div>
 
               <p className="mb-3 text-xs text-gray-500 line-clamp-2">{s.description}</p>
 

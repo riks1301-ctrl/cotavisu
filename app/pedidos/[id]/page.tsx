@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { UrgencyInline } from "@/components/urgency-bar"
+import { StarRating, VerifiedBadge } from "@/components/trust-badges"
 import { ButtonLink } from "@/components/ui/button-link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -193,15 +194,15 @@ export default function PedidoPage() {
 
                   <div className="mb-3 flex items-center justify-between">
                     <div>
-                      <p className="font-semibold">{p.supplier_profiles?.company_name}</p>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        {(p.supplier_profiles?.total_reviews ?? 0) > 0 ? (
-                          <><Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                          <span>{p.supplier_profiles?.rating_avg} ({p.supplier_profiles?.total_reviews} avaliações)</span></>
-                        ) : (
-                          <Badge variant="outline" className="text-xs">Novo fornecedor</Badge>
-                        )}
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="font-semibold">{p.supplier_profiles?.company_name}</p>
+                        {p.supplier_profiles?.is_premium && <VerifiedBadge />}
                       </div>
+                      <StarRating
+                        rating={p.supplier_profiles?.rating_avg ?? 0}
+                        reviews={p.supplier_profiles?.total_reviews ?? 0}
+                        size="sm"
+                      />
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold">R$ {p.price_total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
