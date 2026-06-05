@@ -9,88 +9,100 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, ChevronRight, Loader2 } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase-client"
+import { serviceCategories, type ServiceConfig } from "@/lib/service-options"
 
-const categories = [
-  { name: "Adesivos", icon: "🏷️", services: ["Adesivo Impresso Colorido", "Adesivo Recortado (Plotter)", "Envelopamento Veicular Parcial"] },
-  { name: "Banners e Lonas", icon: "🚩", services: ["Banner em Lona 440g", "Banner Blackout Dupla Face"] },
-  { name: "Fachadas e ACM", icon: "🏢", services: ["Fachada em ACM"] },
-  { name: "Plotagem e Recorte", icon: "✂️", services: ["Plotagem Planta A1"] },
-  { name: "Luminosos e Letras", icon: "⚡", services: ["Letra Caixa Acrílico"] },
-  { name: "Impressão Digital", icon: "🖨️", services: ["Impressão Digital Personalizada"] },
-]
-
-const basePrices: Record<string, { price: number; unit: string; formula: string }> = {
-  "Adesivo Impresso Colorido": { price: 45, unit: "m²", formula: "area" },
-  "Adesivo Recortado (Plotter)": { price: 35, unit: "m²", formula: "area_min1m2" },
-  "Envelopamento Veicular Parcial": { price: 380, unit: "m²", formula: "area" },
-  "Banner em Lona 440g": { price: 25, unit: "m²", formula: "area" },
-  "Banner Blackout Dupla Face": { price: 55, unit: "m²", formula: "area" },
-  "Fachada em ACM": { price: 280, unit: "m²", formula: "area" },
-  "Plotagem Planta A1": { price: 12, unit: "un", formula: "unit" },
-  "Letra Caixa Acrílico": { price: 180, unit: "un", formula: "unit" },
-}
+const STEPS = ["Categoria", "Serviço", "Especificações", "Medidas", "Localização"]
 
 export default function NovoPedidoPage() {
   const router = useRouter()
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({
-    category: "",
-    serviceType: "",
-    material: "",
-    width: "",
-    height: "",
-    quantity: "1",
-    city: "",
-    state: "",
-    deadlineDays: "7",
-    description: "",
-    buyerName: "",
-  })
 
-  const selectedCat = categories.find((c) => c.name === form.category)
+  const [selectedCategory, setSelectedCategory] = useState<string>("")
+  const [selectedService, setSelectedService] = useState<ServiceConfig | null>(null)
+  const [attributes, setAttributes] = useState<Record<string, string>>({})
+  const [widthCm, setWidthCm] = useState("")
+  const [heightCm, setHeightCm] = useState("")
+  const [quantity, setQuantity] = useState("1")
+  const [city, setCity] = useState("")
+  const [state, setState] = useState("")
+  const [deadlineDays, setDeadlineDays] = useState("7")
+  const [description, setDescription] = useState("")
+  const [buyerName, setBuyerName] = useState("")
 
-  function set(field: string, value: string) {
-    setForm((f) => ({ ...f, [field]: value }))
+  const category = serviceCategories.find((c) => c.name === selectedCategory)
+
+  function setAttr(key: string, value: string) {
+    setAttributes((prev) => ({ ...prev, [key]: value }))
   }
 
+  // Calcula estimativa em m²
   function estimatedPrice() {
-    const svc = basePrices[form.serviceType]
-    if (!svc || !form.width || !form.height) return null
-    const w = parseFloat(form.width)
-    const h = parseFloat(form.height)
-    const qty = parseInt(form.quantity) || 1
+    if (!selectedService || !widthCm || !heightCm) return null
+    const w = parseFloat(widthCm) / 100
+    const h = parseFloat(heightCm) / 100
+    const qty = parseInt(quantity) || 1
+    // Preços de referência por serviço
+    const ref: Record<string, number> = {
+      "Adesivo Impresso": 45,
+      "Adesivo Recortado (Plotter)": 35,
+      "Envelopamento Veicular": 380,
+      "Banner": 25,
+      "Lona para Fachada": 30,
+      "Placa em ACM": 280,
+      "Placa em PVC": 42,
+      "Letra Caixa": 180,
+      "Painel Luminoso": 350,
+      "Impressão em Rígido (Direto)": 55,
+    }
+    const basePrice = ref[selectedService.name] ?? 40
     let price = 0
-    if (svc.formula === "area") price = w * h * qty * svc.price
-    if (svc.formula === "area_min1m2") price = Math.max(w * h, 1) * qty * svc.price
-    if (svc.formula === "unit") price = qty * svc.price
+    if (selectedService.unit === "cm2") price = w * h * qty * basePrice
+    if (selectedService.unit === "unit") price = qty * basePrice
     return price.toFixed(2)
   }
 
   async function handleSubmit() {
     setLoading(true)
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Monta texto das especificações selecionadas
+    const specsText = Object.entries(attributes)
+      .map(([key, val]) => {
+        const attr = selectedService?.attributes.find((a) => a.key === key)
+        const opt = attr?.options.find((o) => o.id === val)
+        return `${attr?.label}: ${opt?.label}`
+      })
+      .join(" | ")
+
+    const descFull = [specsText, description].filter(Boolean).join("\n")
+
+    const w = parseFloat(widthCm) / 100
+    const h = parseFloat(heightCm) / 100
+
     const { data, error } = await supabase
       .from("service_requests")
       .insert({
-        service_type: form.serviceType,
-        category: form.category,
-        material: form.material || null,
-        width_m: parseFloat(form.width),
-        height_m: parseFloat(form.height),
-        quantity: parseInt(form.quantity),
-        city: form.city,
-        state: form.state.toUpperCase(),
-        deadline_days: parseInt(form.deadlineDays),
-        description: form.description || null,
-        buyer_name: form.buyerName || null,
+        service_type: selectedService?.name,
+        category: selectedCategory,
+        material: specsText || null,
+        width_m: isNaN(w) ? null : w,
+        height_m: isNaN(h) ? null : h,
+        quantity: parseInt(quantity),
+        city,
+        state: state.toUpperCase(),
+        deadline_days: parseInt(deadlineDays),
+        description: descFull || null,
+        buyer_name: buyerName || null,
+        buyer_id: user?.id ?? null,
         status: "open",
       })
       .select()
       .single()
 
     setLoading(false)
-
     if (!error && data) {
       router.push(`/pedidos/${data.id}`)
     } else {
@@ -98,172 +110,353 @@ export default function NovoPedidoPage() {
     }
   }
 
+  const canProceed = () => {
+    if (step === 0) return !!selectedCategory
+    if (step === 1) return !!selectedService
+    if (step === 2) {
+      const required = selectedService?.attributes.filter((a) => a.required) ?? []
+      return required.every((a) => attributes[a.key])
+    }
+    if (step === 3) {
+      if (selectedService?.unit === "unit") return !!quantity
+      return !!widthCm && !!heightCm && !!quantity
+    }
+    if (step === 4) return !!city && !!state
+    return false
+  }
+
   const price = estimatedPrice()
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-      <div className="mb-8">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold">Criar pedido de orçamento</h1>
-        <p className="text-gray-500">Preencha os detalhes e receba propostas de fornecedores</p>
+        <p className="text-gray-500 text-sm">Preencha os detalhes e receba propostas de fornecedores</p>
       </div>
 
       {/* Steps */}
-      <div className="mb-8 flex items-center gap-2">
-        {[{ n: 1, label: "Serviço" }, { n: 2, label: "Detalhes" }, { n: 3, label: "Localização" }].map((s, i) => (
-          <div key={s.n} className="flex items-center gap-2">
-            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${step > s.n ? "bg-green-500 text-white" : step === s.n ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"}`}>
-              {step > s.n ? <CheckCircle className="h-4 w-4" /> : s.n}
+      <div className="mb-6 flex items-center gap-1 overflow-x-auto pb-1">
+        {STEPS.map((s, i) => (
+          <div key={s} className="flex items-center gap-1 shrink-0">
+            <div className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold shrink-0 ${
+              step > i ? "bg-green-500 text-white" : step === i ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"
+            }`}>
+              {step > i ? <CheckCircle className="h-3 w-3" /> : i + 1}
             </div>
-            <span className={`text-sm ${step === s.n ? "font-medium" : "text-gray-400"}`}>{s.label}</span>
-            {i < 2 && <ChevronRight className="h-4 w-4 text-gray-300" />}
+            <span className={`text-xs whitespace-nowrap ${step === i ? "font-medium text-gray-800" : "text-gray-400"}`}>{s}</span>
+            {i < STEPS.length - 1 && <div className="h-px w-3 bg-gray-200 shrink-0" />}
           </div>
         ))}
       </div>
 
       <Card>
         <CardContent className="p-6">
-          {/* Step 1 — Categoria e serviço */}
-          {step === 1 && (
-            <div className="space-y-5">
-              <div>
-                <Label className="mb-2 block">Categoria do serviço</Label>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat.name}
-                      onClick={() => { set("category", cat.name); set("serviceType", "") }}
-                      className={`flex flex-col items-center gap-1 rounded-lg border p-3 text-sm transition-all ${form.category === cat.name ? "border-blue-500 bg-blue-50 font-medium text-blue-700" : "hover:border-gray-300 hover:bg-gray-50"}`}
-                    >
-                      <span className="text-2xl">{cat.icon}</span>
-                      <span>{cat.name}</span>
-                    </button>
-                  ))}
-                </div>
+
+          {/* STEP 0 — Categoria */}
+          {step === 0 && (
+            <div className="space-y-4">
+              <p className="font-medium text-gray-700">Qual tipo de serviço você precisa?</p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {serviceCategories.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onClick={() => { setSelectedCategory(cat.name); setSelectedService(null); setAttributes({}) }}
+                    className={`flex flex-col items-center gap-1.5 rounded-xl border p-4 text-sm transition-all ${
+                      selectedCategory === cat.name ? "border-blue-500 bg-blue-50 text-blue-700 font-medium" : "hover:border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    <span className="text-2xl">{cat.icon}</span>
+                    <span className="leading-tight text-center">{cat.name}</span>
+                  </button>
+                ))}
               </div>
-
-              {selectedCat && (
-                <div>
-                  <Label className="mb-2 block">Tipo de serviço</Label>
-                  <div className="space-y-2">
-                    {selectedCat.services.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => set("serviceType", s)}
-                        className={`w-full rounded-lg border p-3 text-left text-sm transition-all ${form.serviceType === s ? "border-blue-500 bg-blue-50 font-medium" : "hover:border-gray-300"}`}
-                      >
-                        <div className="flex justify-between">
-                          <span>{s}</span>
-                          {basePrices[s] && (
-                            <span className="text-gray-400">
-                              ~R$ {basePrices[s].price}/{basePrices[s].unit}
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <Button className="w-full" disabled={!form.category || !form.serviceType} onClick={() => setStep(2)}>
-                Continuar <ChevronRight className="ml-2 h-4 w-4" />
+              <Button className="w-full" disabled={!canProceed()} onClick={() => setStep(1)}>
+                Próximo <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           )}
 
-          {/* Step 2 — Medidas */}
-          {step === 2 && (
-            <div className="space-y-5">
+          {/* STEP 1 — Serviço específico */}
+          {step === 1 && category && (
+            <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{form.category}</Badge>
-                <span className="text-sm text-gray-600">{form.serviceType}</span>
+                <span className="text-lg">{category.icon}</span>
+                <p className="font-medium">{category.name} — Qual serviço especificamente?</p>
+              </div>
+              <div className="space-y-2">
+                {category.services.map((svc) => (
+                  <button
+                    key={svc.name}
+                    onClick={() => { setSelectedService(svc); setAttributes({}) }}
+                    className={`w-full flex items-center gap-3 rounded-xl border p-4 text-left transition-all ${
+                      selectedService?.name === svc.name ? "border-blue-500 bg-blue-50" : "hover:border-gray-300"
+                    }`}
+                  >
+                    <span className="text-xl">{svc.icon}</span>
+                    <span className="font-medium">{svc.name}</span>
+                    {selectedService?.name === svc.name && (
+                      <CheckCircle className="ml-auto h-4 w-4 text-blue-600" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setStep(0)}>Voltar</Button>
+                <Button className="flex-1" disabled={!canProceed()} onClick={() => setStep(2)}>
+                  Próximo <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2 — Atributos/especificações */}
+          {step === 2 && selectedService && (
+            <div className="space-y-5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="secondary">{selectedCategory}</Badge>
+                <span className="font-medium text-sm">{selectedService.name}</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="width">Largura (metros)</Label>
-                  <Input id="width" type="number" placeholder="ex: 2.5" value={form.width} onChange={(e) => set("width", e.target.value)} />
+              {selectedService.attributes.map((attr) => (
+                <div key={attr.key}>
+                  <Label className="mb-2 block">
+                    {attr.label}
+                    {attr.required && <span className="ml-1 text-red-500">*</span>}
+                  </Label>
+                  <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                    {attr.options.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setAttr(attr.key, opt.id)}
+                        className={`rounded-lg border px-3 py-2 text-left text-sm transition-all ${
+                          attributes[attr.key] === opt.id
+                            ? "border-blue-500 bg-blue-50 font-medium text-blue-700"
+                            : "hover:border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        {attributes[attr.key] === opt.id && "✓ "}{opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="height">Altura (metros)</Label>
-                  <Input id="height" type="number" placeholder="ex: 1.0" value={form.height} onChange={(e) => set("height", e.target.value)} />
-                </div>
+              ))}
+
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Voltar</Button>
+                <Button className="flex-1" disabled={!canProceed()} onClick={() => setStep(3)}>
+                  Próximo <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3 — Medidas em CM */}
+          {step === 3 && selectedService && (
+            <div className="space-y-5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="secondary">{selectedCategory}</Badge>
+                <span className="font-medium text-sm">{selectedService.name}</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="qty">Quantidade</Label>
-                  <Input id="qty" type="number" min="1" value={form.quantity} onChange={(e) => set("quantity", e.target.value)} />
+              {selectedService.unit !== "unit" ? (
+                <>
+                  <div className="rounded-lg bg-blue-50 border border-blue-100 p-3 text-sm text-blue-700">
+                    📏 Informe as medidas em <strong>centímetros (cm)</strong>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="width">Largura (cm) *</Label>
+                      <div className="relative">
+                        <Input
+                          id="width"
+                          type="number"
+                          placeholder="ex: 100"
+                          value={widthCm}
+                          onChange={(e) => setWidthCm(e.target.value)}
+                          className="pr-10"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="height">Altura (cm) *</Label>
+                      <div className="relative">
+                        <Input
+                          id="height"
+                          type="number"
+                          placeholder="ex: 50"
+                          value={heightCm}
+                          onChange={(e) => setHeightCm(e.target.value)}
+                          className="pr-10"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {widthCm && heightCm && (
+                    <div className="rounded-lg bg-gray-50 border p-3 text-sm text-gray-600">
+                      <span className="font-medium">Área total por unidade:</span>{" "}
+                      {(parseFloat(widthCm) * parseFloat(heightCm) / 10000).toFixed(4)} m²
+                      {" "}({widthCm} × {heightCm} cm)
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="rounded-lg bg-gray-50 border p-3 text-sm text-gray-600">
+                  Este serviço é cobrado por unidade/peça.
                 </div>
-                <div>
-                  <Label htmlFor="material">Material (opcional)</Label>
-                  <Input id="material" placeholder="ex: lona 440g" value={form.material} onChange={(e) => set("material", e.target.value)} />
-                </div>
-              </div>
+              )}
 
               <div>
-                <Label htmlFor="desc">Descrição e observações</Label>
-                <Textarea id="desc" placeholder="Detalhe o que você precisa..." value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} />
+                <Label htmlFor="qty">Quantidade *</Label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => String(Math.max(1, parseInt(q) - 1)))}
+                    className="flex h-9 w-9 items-center justify-center rounded-lg border text-lg font-bold hover:bg-gray-50"
+                  >-</button>
+                  <Input
+                    id="qty"
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    className="text-center"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => String(parseInt(q) + 1))}
+                    className="flex h-9 w-9 items-center justify-center rounded-lg border text-lg font-bold hover:bg-gray-50"
+                  >+</button>
+                </div>
               </div>
 
               {price && (
-                <div className="rounded-lg bg-blue-50 border border-blue-200 p-3">
-                  <p className="text-sm text-blue-700">
+                <div className="rounded-lg bg-green-50 border border-green-200 p-3">
+                  <p className="text-sm text-green-700">
                     <span className="font-semibold">Estimativa de referência:</span> R$ {price}
-                    <span className="ml-1 text-xs text-blue-500">(preço médio de mercado)</span>
+                    <span className="ml-1 text-xs text-green-500">
+                      (preço médio · {quantity} un · {widthCm}×{heightCm}cm)
+                    </span>
                   </p>
                 </div>
               )}
 
               <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Voltar</Button>
-                <Button className="flex-1" disabled={!form.width || !form.height} onClick={() => setStep(3)}>
-                  Continuar <ChevronRight className="ml-2 h-4 w-4" />
+                <Button variant="outline" className="flex-1" onClick={() => setStep(2)}>Voltar</Button>
+                <Button className="flex-1" disabled={!canProceed()} onClick={() => setStep(4)}>
+                  Próximo <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Step 3 — Localização */}
-          {step === 3 && (
-            <div className="space-y-5">
+          {/* STEP 4 — Localização e finalização */}
+          {step === 4 && (
+            <div className="space-y-4">
               <div>
                 <Label htmlFor="buyerName">Seu nome ou empresa (opcional)</Label>
-                <Input id="buyerName" placeholder="ex: Empresa Alfa Ltda" value={form.buyerName} onChange={(e) => set("buyerName", e.target.value)} />
+                <Input
+                  id="buyerName"
+                  placeholder="ex: João Silva ou Empresa Alfa"
+                  value={buyerName}
+                  onChange={(e) => setBuyerName(e.target.value)}
+                />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <Label htmlFor="city">Cidade</Label>
-                  <Input id="city" placeholder="ex: São Paulo" value={form.city} onChange={(e) => set("city", e.target.value)} />
+                  <Label htmlFor="city">Cidade *</Label>
+                  <Input
+                    id="city"
+                    placeholder="ex: São Paulo"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
                 </div>
                 <div>
-                  <Label htmlFor="state">Estado</Label>
-                  <Input id="state" placeholder="SP" maxLength={2} value={form.state} onChange={(e) => set("state", e.target.value.toUpperCase())} />
+                  <Label htmlFor="state">UF *</Label>
+                  <Input
+                    id="state"
+                    placeholder="SP"
+                    maxLength={2}
+                    value={state}
+                    onChange={(e) => setState(e.target.value.toUpperCase())}
+                  />
                 </div>
               </div>
 
               <div>
                 <Label htmlFor="deadline">Prazo desejado (dias)</Label>
-                <Input id="deadline" type="number" min="1" value={form.deadlineDays} onChange={(e) => set("deadlineDays", e.target.value)} />
+                <div className="flex gap-2 flex-wrap">
+                  {["3", "5", "7", "10", "15", "30"].map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setDeadlineDays(d)}
+                      className={`rounded-lg border px-3 py-1.5 text-sm transition-all ${
+                        deadlineDays === d ? "border-blue-500 bg-blue-50 font-medium text-blue-700" : "hover:border-gray-300"
+                      }`}
+                    >
+                      {d} dias
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="obs">Observações adicionais</Label>
+                <Textarea
+                  id="obs"
+                  placeholder="Algum detalhe extra? Arte já aprovada? Precisa de instalação? etc."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                />
               </div>
 
               {/* Resumo */}
-              <div className="rounded-lg border bg-gray-50 p-4 space-y-1 text-sm">
-                <p className="font-semibold text-gray-700 mb-2">Resumo do pedido</p>
-                <p><span className="text-gray-500">Serviço:</span> {form.serviceType}</p>
-                <p><span className="text-gray-500">Medidas:</span> {form.width}m × {form.height}m</p>
-                <p><span className="text-gray-500">Quantidade:</span> {form.quantity} unidades</p>
-                {price && <p className="text-blue-600 font-medium pt-1">Estimativa: R$ {price}</p>}
+              <div className="rounded-xl border bg-gray-50 p-4 space-y-1.5 text-sm">
+                <p className="font-semibold text-gray-700 mb-2">📋 Resumo do pedido</p>
+                <p><span className="text-gray-500">Serviço:</span> {selectedService?.name}</p>
+                {Object.entries(attributes).map(([key, val]) => {
+                  const attr = selectedService?.attributes.find((a) => a.key === key)
+                  const opt = attr?.options.find((o) => o.id === val)
+                  return opt ? (
+                    <p key={key}><span className="text-gray-500">{attr?.label}:</span> {opt.label}</p>
+                  ) : null
+                })}
+                {selectedService?.unit !== "unit" && widthCm && heightCm && (
+                  <p><span className="text-gray-500">Medidas:</span> {widthCm}cm × {heightCm}cm</p>
+                )}
+                <p><span className="text-gray-500">Quantidade:</span> {quantity} {selectedService?.unit === "unit" ? "peça(s)" : "unidade(s)"}</p>
+                {city && <p><span className="text-gray-500">Local:</span> {city}/{state}</p>}
+                {price && (
+                  <p className="text-green-600 font-medium pt-1">
+                    Estimativa: R$ {price}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" onClick={() => setStep(2)}>Voltar</Button>
-                <Button className="flex-1" disabled={!form.city || !form.state || loading} onClick={handleSubmit}>
-                  {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publicando...</> : "Publicar pedido"}
+                <Button variant="outline" className="flex-1" onClick={() => setStep(3)}>Voltar</Button>
+                <Button
+                  className="flex-1"
+                  disabled={!canProceed() || loading}
+                  onClick={handleSubmit}
+                >
+                  {loading
+                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publicando...</>
+                    : "Publicar pedido"
+                  }
                 </Button>
               </div>
-              <p className="text-center text-xs text-gray-400">Pedido fica aberto por 7 dias. Gratuito para compradores.</p>
+              <p className="text-center text-xs text-gray-400">
+                Pedido fica aberto por 7 dias · Gratuito para compradores
+              </p>
             </div>
           )}
         </CardContent>
