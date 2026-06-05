@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CheckCircle, Clock, Star, TrendingDown, Zap } from "lucide-react";
 import { getCategories, getServiceRequests } from "@/lib/db";
+import { UrgencyBar } from "@/components/urgency-bar";
 
 export const revalidate = 60
 
@@ -42,6 +43,13 @@ export default async function Home() {
           <p className="mt-4 text-sm text-blue-200">
             Sem cadastro para ver pedidos. Gratuito para compradores.
           </p>
+        </div>
+      </section>
+
+      {/* Barra de urgência */}
+      <section className="border-b px-4 py-3 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <UrgencyBar />
         </div>
       </section>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
+import { UrgencyInline } from "@/components/urgency-bar"
 import { ButtonLink } from "@/components/ui/button-link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -275,8 +276,9 @@ export default function PedidoPage() {
         </div>
       )}
 
-      {/* Formulário de proposta */}
-      <div className="mt-6">
+      {/* Urgência + Formulário */}
+      <div className="mt-6 space-y-3">
+        <UrgencyInline />
         {isSupplier ? (
           <PropostaForm requestId={id} />
         ) : (

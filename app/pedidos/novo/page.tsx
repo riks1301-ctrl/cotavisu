@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase-client"
 import { serviceCategories, type ServiceConfig } from "@/lib/service-options"
 import { ProductPreview } from "@/components/product-preview"
 import { PriceCards } from "@/components/price-cards"
+import { UrgencyInline } from "@/components/urgency-bar"
 
 const STEPS = ["Categoria", "Serviço", "Especificações", "Medidas", "Localização"]
 
@@ -153,6 +154,9 @@ export default function NovoPedidoPage() {
         <p className="mt-0.5 text-sm text-gray-400">
           Compare preço, prazo e qualidade em um só lugar
         </p>
+        <div className="mt-3">
+          <UrgencyInline />
+        </div>
       </div>
 
       {/* Steps */}
