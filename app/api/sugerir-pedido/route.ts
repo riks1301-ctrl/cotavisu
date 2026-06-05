@@ -50,16 +50,38 @@ export async function POST(req: NextRequest) {
 
     const text = message.content[0].type === "text" ? message.content[0].text : ""
 
+    // Remove possíveis blocos markdown ```json ... ```
+    const cleaned = text
+      .trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/, "")
+      .trim()
+
     let suggestion
     try {
-      suggestion = JSON.parse(text.trim())
+      suggestion = JSON.parse(cleaned)
     } catch {
-      return NextResponse.json({ error: "Não foi possível processar a sugestão" }, { status: 500 })
+      // Tenta extrair JSON de dentro do texto
+      const match = cleaned.match(/\{[\s\S]*\}/)
+      if (match) {
+        try {
+          suggestion = JSON.parse(match[0])
+        } catch {
+          return NextResponse.json({ error: "Não foi possível processar a sugestão" }, { status: 500 })
+        }
+      } else {
+        return NextResponse.json({ error: "Não foi possível processar a sugestão" }, { status: 500 })
+      }
     }
 
     return NextResponse.json(suggestion)
-  } catch (error) {
-    console.error("Erro na sugestão de IA:", error)
-    return NextResponse.json({ error: "Erro interno" }, { status: 500 })
+  } catch (error: any) {
+    console.error("Erro na sugestão de IA:", error?.message ?? error)
+    const msg = error?.message?.includes("API key")
+      ? "Chave de API inválida"
+      : error?.message?.includes("model")
+      ? "Modelo não disponível"
+      : "Erro interno"
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
