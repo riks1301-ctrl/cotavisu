@@ -14,14 +14,16 @@ import { serviceCategories, type ServiceConfig } from "@/lib/service-options"
 import { ProductPreview } from "@/components/product-preview"
 import { PriceCards } from "@/components/price-cards"
 import { UrgencyInline } from "@/components/urgency-bar"
+import { AISuggestion } from "@/components/ai-suggestion"
 
-const STEPS = ["Categoria", "Serviço", "Especificações", "Medidas", "Localização"]
+const STEPS = ["IA", "Categoria", "Serviço", "Especificações", "Medidas", "Localização"]
 
 export default function NovoPedidoPage() {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
 
+  const [showAI, setShowAI] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string>("")
   const [selectedService, setSelectedService] = useState<ServiceConfig | null>(null)
   const [attributes, setAttributes] = useState<Record<string, string>>({})
@@ -35,6 +37,20 @@ export default function NovoPedidoPage() {
   const [buyerName, setBuyerName] = useState("")
 
   const category = serviceCategories.find((c) => c.name === selectedCategory)
+
+  function applyAISuggestion(s: { categoria: string; servico: string; largura_cm: number | null; altura_cm: number | null; quantidade: number; material_sugerido: string; observacoes: string }) {
+    setSelectedCategory(s.categoria)
+    const cat = serviceCategories.find((c) => c.name === s.categoria)
+    const svc = cat?.services.find((sv) => sv.name === s.servico) ?? null
+    setSelectedService(svc)
+    if (s.largura_cm) setWidthCm(String(s.largura_cm))
+    if (s.altura_cm) setHeightCm(String(s.altura_cm))
+    setQuantity(String(s.quantidade))
+    if (s.observacoes) setDescription(s.observacoes)
+    setShowAI(false)
+    // Vai direto para especificações se encontrou o serviço, senão para categoria
+    setStep(svc ? 2 : 1)
+  }
 
   function setAttr(key: string, value: string) {
     setAttributes((prev) => ({ ...prev, [key]: value }))
@@ -173,6 +189,16 @@ export default function NovoPedidoPage() {
           </div>
         ))}
       </div>
+
+      {/* Step IA — aparece antes do stepper */}
+      {showAI && step === 0 && (
+        <div className="mb-4">
+          <AISuggestion
+            onApply={applyAISuggestion}
+            onSkip={() => setShowAI(false)}
+          />
+        </div>
+      )}
 
       <Card>
         <CardContent className="p-6">
