@@ -131,7 +131,12 @@ export default function NovoPedidoPage() {
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Criar pedido de orçamento</h1>
-        <p className="text-gray-500 text-sm">Preencha os detalhes e receba propostas de fornecedores</p>
+        <p className="mt-1 text-base text-gray-700 font-medium">
+          Crie um pedido e receba propostas de fornecedores qualificados em minutos
+        </p>
+        <p className="mt-0.5 text-sm text-gray-400">
+          Compare preço, prazo e qualidade em um só lugar
+        </p>
       </div>
 
       {/* Steps */}
