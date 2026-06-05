@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { CheckCircle, ChevronRight, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
 import { serviceCategories, type ServiceConfig } from "@/lib/service-options"
+import { ProductPreview } from "@/components/product-preview"
+import { PriceCards } from "@/components/price-cards"
 
 const STEPS = ["Categoria", "Serviço", "Especificações", "Medidas", "Localização"]
 
@@ -236,6 +238,15 @@ export default function NovoPedidoPage() {
                 <span className="font-medium text-sm">{selectedService.name}</span>
               </div>
 
+              {/* Preview ao vivo */}
+              <ProductPreview
+                serviceName={selectedService.name}
+                widthCm={widthCm}
+                heightCm={heightCm}
+                quantity={quantity}
+                attributes={attributes}
+              />
+
               {selectedService.attributes.map((attr) => (
                 <div key={attr.key}>
                   <Label className="mb-2 block">
@@ -353,28 +364,24 @@ export default function NovoPedidoPage() {
                 </div>
               </div>
 
-              {price && (
-                <div className="rounded-lg bg-green-50 border border-green-200 p-4 space-y-1">
-                  <p className="text-xs text-green-600 font-medium uppercase tracking-wide">
-                    Faixa de preço praticada no mercado
-                  </p>
-                  <p className="text-2xl font-bold text-green-700">
-                    R$ {price.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                    <span className="ml-1 text-sm font-normal text-green-600">total estimado</span>
-                  </p>
-                  <div className="flex flex-wrap gap-3 text-xs text-green-700 pt-1">
-                    {price.area !== null && (
-                      <span>📐 {price.area.toFixed(4)} m² por unidade</span>
-                    )}
-                    <span>
-                      💰 R$ {price.perUnit.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} por {price.unitLabel}
-                    </span>
-                    <span>📦 {quantity} {parseInt(quantity) === 1 ? "unidade" : "unidades"}</span>
-                  </div>
-                  <p className="text-xs text-green-500 pt-1">
-                    ⚡ Baseado em pedidos similares na sua região · Proposta real pode variar
-                  </p>
-                </div>
+              {/* Preview proporcional */}
+              {selectedService && (
+                <ProductPreview
+                  serviceName={selectedService.name}
+                  widthCm={widthCm}
+                  heightCm={heightCm}
+                  quantity={quantity}
+                  attributes={attributes}
+                />
+              )}
+
+              {/* Cards de preço estilo iFood */}
+              {price && selectedService && (
+                <PriceCards
+                  price={price}
+                  serviceName={selectedService.name}
+                  quantity={quantity}
+                />
               )}
 
               <div className="flex gap-2">
