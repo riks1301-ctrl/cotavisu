@@ -15,6 +15,7 @@ import { ProductPreview } from "@/components/product-preview"
 import { PriceCards } from "@/components/price-cards"
 import { UrgencyInline } from "@/components/urgency-bar"
 import { AISuggestion } from "@/components/ai-suggestion"
+import { PDVBuilder, type PDVItemSelected } from "@/components/pdv-builder"
 
 const STEPS = ["IA", "Categoria", "Serviço", "Especificações", "Medidas", "Localização"]
 
@@ -24,6 +25,7 @@ export default function NovoPedidoPage() {
   const [loading, setLoading] = useState(false)
 
   const [showAI, setShowAI] = useState(true)
+  const [showPDV, setShowPDV] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<string>("")
   const [selectedService, setSelectedService] = useState<ServiceConfig | null>(null)
   const [attributes, setAttributes] = useState<Record<string, string>>({})
@@ -37,6 +39,52 @@ export default function NovoPedidoPage() {
   const [buyerName, setBuyerName] = useState("")
 
   const category = serviceCategories.find((c) => c.name === selectedCategory)
+
+  async function handlePDVSubmit(items: PDVItemSelected[], desc: string) {
+    setLoading(true)
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const specsText = items.map((item) => {
+      const attrs = Object.entries(item.attributes)
+        .map(([k, v]) => {
+          const attr = item.item.attributes.find((a) => a.key === k)
+          const opt = attr?.options.find((o) => o.id === v)
+          return `${attr?.label}: ${opt?.label}`
+        }).join(", ")
+      const dims = item.widthCm && item.heightCm
+        ? ` (${item.widthCm}×${item.heightCm}cm)`
+        : item.widthCm ? ` (${item.widthCm}cm)` : ""
+      return `${item.item.name}${dims} × ${item.quantity}un — ${attrs}`
+    }).join("\n")
+
+    const { data, error } = await supabase
+      .from("service_requests")
+      .insert({
+        service_type: `Kit PDV (${items.length} item${items.length > 1 ? "s" : ""})`,
+        category: "PDV — Materiais de Loja",
+        material: items.map((i) => i.item.name).join(", "),
+        width_m: null,
+        height_m: null,
+        quantity: items.reduce((acc, i) => acc + parseInt(i.quantity), 0),
+        city: city || "A definir",
+        state: state || "BR",
+        deadline_days: parseInt(deadlineDays),
+        description: [specsText, desc].filter(Boolean).join("\n\n"),
+        buyer_name: buyerName || null,
+        buyer_id: user?.id ?? null,
+        status: "open",
+      })
+      .select()
+      .single()
+
+    setLoading(false)
+    if (!error && data) {
+      router.push(`/pedidos/${data.id}`)
+    } else {
+      alert("Erro ao criar pedido PDV.")
+    }
+  }
 
   function applyAISuggestion(s: { categoria: string; servico: string; largura_cm: number | null; altura_cm: number | null; quantidade: number; material_sugerido: string; observacoes: string }) {
     setSelectedCategory(s.categoria)
@@ -190,8 +238,8 @@ export default function NovoPedidoPage() {
         ))}
       </div>
 
-      {/* Step IA — aparece antes do stepper */}
-      {showAI && step === 0 && (
+      {/* Step IA */}
+      {showAI && step === 0 && !showPDV && (
         <div className="mb-4">
           <AISuggestion
             onApply={applyAISuggestion}
@@ -200,7 +248,19 @@ export default function NovoPedidoPage() {
         </div>
       )}
 
-      <Card>
+      {/* PDV Builder — fluxo separado */}
+      {showPDV && (
+        <Card>
+          <CardContent className="p-6">
+            <PDVBuilder
+              onConfirm={handlePDVSubmit}
+              onBack={() => { setShowPDV(false); setSelectedCategory("") }}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {showPDV ? null : <Card>
         <CardContent className="p-6">
 
           {/* STEP 0 — Categoria */}
@@ -211,7 +271,17 @@ export default function NovoPedidoPage() {
                 {serviceCategories.map((cat) => (
                   <button
                     key={cat.name}
-                    onClick={() => { setSelectedCategory(cat.name); setSelectedService(null); setAttributes({}) }}
+                    onClick={() => {
+                      if (cat.name === "PDV — Materiais de Loja") {
+                        setSelectedCategory(cat.name)
+                        setShowPDV(true)
+                        setShowAI(false)
+                      } else {
+                        setSelectedCategory(cat.name)
+                        setSelectedService(null)
+                        setAttributes({})
+                      }
+                    }}
                     className={`flex flex-col items-center gap-1.5 rounded-xl border p-4 text-sm transition-all ${
                       selectedCategory === cat.name ? "border-blue-500 bg-blue-50 text-blue-700 font-medium" : "hover:border-gray-300 hover:bg-gray-50"
                     }`}
@@ -536,7 +606,7 @@ export default function NovoPedidoPage() {
             </div>
           )}
         </CardContent>
-      </Card>
+      </Card>}
     </div>
   )
 }

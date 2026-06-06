@@ -16,6 +16,334 @@ export type ServiceConfig = {
   }[]
 }
 
+// Tipo específico para itens de PDV (pedido com múltiplos itens)
+export type PDVItem = {
+  id: string
+  name: string
+  icon: string
+  description: string
+  unit: "cm2" | "unit" | "linear_cm"
+  dimensionLabel: string // ex: "Largura × Altura", "Comprimento", "Altura × Base"
+  widthLabel?: string
+  heightLabel?: string
+  attributes: {
+    key: string
+    label: string
+    options: ServiceOption[]
+    required: boolean
+  }[]
+}
+
+export const pdvItems: PDVItem[] = [
+  {
+    id: "wobbler",
+    name: "Wobbler",
+    icon: "🏷️",
+    description: "Tag suspensa que balança na gôndola",
+    unit: "cm2",
+    dimensionLabel: "Largura × Altura",
+    widthLabel: "Largura (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "pp", label: "PP (polipropileno) — padrão" },
+          { id: "pvc", label: "PVC rígido" },
+          { id: "papel_couche", label: "Papel couché laminado" },
+        ],
+      },
+      {
+        key: "laminacao",
+        label: "Laminação",
+        required: false,
+        options: [
+          { id: "sem", label: "Sem laminação" },
+          { id: "fosca", label: "Fosca" },
+          { id: "brilhante", label: "Brilhante" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "clip_strip",
+    name: "Clip Strip",
+    icon: "📎",
+    description: "Tira plástica com ganchos para pendurar produtos",
+    unit: "unit",
+    dimensionLabel: "Comprimento",
+    widthLabel: "Comprimento (cm)",
+    attributes: [
+      {
+        key: "ganchos",
+        label: "Número de ganchos",
+        required: true,
+        options: [
+          { id: "4", label: "4 ganchos" },
+          { id: "6", label: "6 ganchos" },
+          { id: "8", label: "8 ganchos" },
+          { id: "12", label: "12 ganchos" },
+        ],
+      },
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "pvc_transparente", label: "PVC transparente" },
+          { id: "pp_colorido", label: "PP colorido" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "regua_gondola",
+    name: "Régua de Gôndola",
+    icon: "📏",
+    description: "Faixa frontal da prateleira com informação de preço/produto",
+    unit: "linear_cm",
+    dimensionLabel: "Comprimento × Altura",
+    widthLabel: "Comprimento (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "papel_adesivo", label: "Papel adesivo" },
+          { id: "pp", label: "PP rígido" },
+          { id: "pvc", label: "PVC" },
+        ],
+      },
+      {
+        key: "impressao",
+        label: "Impressão",
+        required: true,
+        options: [
+          { id: "digital", label: "Digital colorida" },
+          { id: "pb", label: "Preto e branco" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "totem",
+    name: "Totem Promocional",
+    icon: "🗿",
+    description: "Display vertical de chão para destaque de produto",
+    unit: "cm2",
+    dimensionLabel: "Largura × Altura",
+    widthLabel: "Largura (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "papelao", label: "Papelão recortado (econômico)" },
+          { id: "pvc_3mm", label: "PVC 3mm" },
+          { id: "acm", label: "ACM" },
+          { id: "mdf", label: "MDF pintado" },
+        ],
+      },
+      {
+        key: "base",
+        label: "Base/suporte",
+        required: true,
+        options: [
+          { id: "propria", label: "Base própria inclusa" },
+          { id: "sem_base", label: "Sem base (parede)" },
+        ],
+      },
+      {
+        key: "laminacao",
+        label: "Acabamento",
+        required: false,
+        options: [
+          { id: "sem", label: "Sem laminação" },
+          { id: "fosco", label: "Laminação fosca" },
+          { id: "brilhante", label: "Laminação brilhante" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "cubo_promocional",
+    name: "Cubo Promocional",
+    icon: "🎲",
+    description: "Display cúbico para balcão ou expositor",
+    unit: "unit",
+    dimensionLabel: "Tamanho do lado",
+    widthLabel: "Lado do cubo (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "papelao", label: "Papelão montável" },
+          { id: "pvc", label: "PVC rígido" },
+          { id: "acrilico", label: "Acrílico" },
+          { id: "mdf", label: "MDF" },
+        ],
+      },
+      {
+        key: "faces",
+        label: "Impressão nas faces",
+        required: true,
+        options: [
+          { id: "todas", label: "Todas as 6 faces" },
+          { id: "4_faces", label: "4 faces laterais" },
+          { id: "1_face", label: "Somente 1 face (frontal)" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "mobile_suspenso",
+    name: "Mobile Suspenso",
+    icon: "🪁",
+    description: "Peça suspensa que gira e chama atenção no teto da loja",
+    unit: "cm2",
+    dimensionLabel: "Largura × Altura por face",
+    widthLabel: "Largura (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "faces",
+        label: "Número de faces",
+        required: true,
+        options: [
+          { id: "2", label: "2 faces (dupla face)" },
+          { id: "3", label: "3 faces" },
+          { id: "4", label: "4 faces" },
+        ],
+      },
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "papel_laminado", label: "Papel laminado" },
+          { id: "pp", label: "PP (mais durável)" },
+          { id: "acrilico", label: "Acrílico" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "display_balcao",
+    name: "Display de Balcão",
+    icon: "🖼️",
+    description: "Suporte de balcão para catálogos, cardápios ou produtos",
+    unit: "cm2",
+    dimensionLabel: "Largura × Altura",
+    widthLabel: "Largura (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "acrilico", label: "Acrílico cristal" },
+          { id: "pvc", label: "PVC" },
+          { id: "papel_rigido", label: "Papel rígido (papelão)" },
+        ],
+      },
+      {
+        key: "bolsos",
+        label: "Bolsos",
+        required: false,
+        options: [
+          { id: "sem", label: "Sem bolso (só base)" },
+          { id: "1", label: "1 bolso A4" },
+          { id: "2", label: "2 bolsos" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "testeira",
+    name: "Testeira",
+    icon: "📢",
+    description: "Faixa superior da gôndola para identificação de seção",
+    unit: "linear_cm",
+    dimensionLabel: "Comprimento × Altura",
+    widthLabel: "Comprimento (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "papel_adesivo", label: "Adesivo impresso" },
+          { id: "pvc", label: "PVC rígido impresso" },
+          { id: "acm", label: "ACM com impressão" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "take_one",
+    name: "Take One",
+    icon: "📄",
+    description: "Porta-folhetos de parede ou gôndola",
+    unit: "unit",
+    dimensionLabel: "Formato do folheto",
+    widthLabel: "Largura (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "formato",
+        label: "Formato do folheto",
+        required: true,
+        options: [
+          { id: "a5", label: "A5 (14,8×21cm)" },
+          { id: "a4", label: "A4 (21×29,7cm)" },
+          { id: "dl", label: "DL (10×21cm) — 1/3 A4" },
+        ],
+      },
+      {
+        key: "material_porta",
+        label: "Material do porta-folheto",
+        required: true,
+        options: [
+          { id: "acrilico", label: "Acrílico cristal" },
+          { id: "pvc", label: "PVC" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "stopper",
+    name: "Stopper de Gôndola",
+    icon: "🚩",
+    description: "Flag lateral que se projeta da prateleira",
+    unit: "cm2",
+    dimensionLabel: "Largura × Altura",
+    widthLabel: "Largura (cm)",
+    heightLabel: "Altura (cm)",
+    attributes: [
+      {
+        key: "material",
+        label: "Material",
+        required: true,
+        options: [
+          { id: "pp", label: "PP (polipropileno)" },
+          { id: "pvc", label: "PVC rígido" },
+          { id: "papel_laminado", label: "Papel laminado" },
+        ],
+      },
+    ],
+  },
+]
+
 export type CategoryConfig = {
   name: string
   icon: string
@@ -23,6 +351,11 @@ export type CategoryConfig = {
 }
 
 export const serviceCategories: CategoryConfig[] = [
+  {
+    name: "PDV — Materiais de Loja",
+    icon: "🏪",
+    services: [], // PDV usa fluxo próprio com múltiplos itens
+  },
   {
     name: "Adesivos",
     icon: "🏷️",
