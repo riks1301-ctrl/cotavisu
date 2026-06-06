@@ -7,6 +7,7 @@ import { getCategories, getServiceRequests } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 import { UrgencyBar } from "@/components/urgency-bar";
 import { TrustSection } from "@/components/trust-badges";
+import { CategoryCards } from "@/components/category-cards";
 
 export const revalidate = 60
 
@@ -75,6 +76,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Cards visuais de categoria */}
+      <CategoryCards />
 
       {/* Barra de urgência */}
       <section className="border-b px-4 py-3 sm:px-6 lg:px-8">
