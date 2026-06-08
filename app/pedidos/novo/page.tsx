@@ -298,7 +298,7 @@ export default function NovoPedidoPage() {
                       className={`group relative overflow-hidden rounded-xl border text-sm transition-all ${
                         isSelected ? "border-blue-500 ring-2 ring-blue-400" : "hover:border-blue-300"
                       }`}
-                      style={{ aspectRatio: "4/3" }}
+                      style={{ aspectRatio: "3/2", maxHeight: "90px" }}
                     >
                       {image ? (
                         <>
@@ -316,7 +316,7 @@ export default function NovoPedidoPage() {
                         </div>
                       )}
                       <div className="absolute bottom-0 left-0 right-0 p-2">
-                        <span className="block text-center text-xs font-semibold leading-tight text-white drop-shadow">
+                        <span className="block text-center text-sm font-bold leading-tight text-white drop-shadow-lg">
                           {isSelected && "✓ "}{cat.name}
                         </span>
                       </div>
