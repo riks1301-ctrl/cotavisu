@@ -268,61 +268,28 @@ export default function NovoPedidoPage() {
             <div className="space-y-4">
               <p className="font-medium text-gray-700">Qual tipo de serviço você precisa?</p>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {serviceCategories.map((cat) => {
-                  const imageMap: Record<string, string> = {
-                    "PDV — Materiais de Loja": "/images/pdv.png",
-                    "Adesivos": "/images/adesivos.png",
-                    "Banners e Lonas": "/images/banner.png",
-                    "Fachadas e ACM": "/images/fachada-acm.png",
-                    "Plotagem": "/images/impressao.png",
-                    "Luminosos": "/images/luminosos.png",
-                    "Impressão Digital": "/images/impressao.png",
-                  }
-                  const image = imageMap[cat.name]
-                  const isSelected = selectedCategory === cat.name
-
-                  return (
-                    <button
-                      key={cat.name}
-                      onClick={() => {
-                        if (cat.name === "PDV — Materiais de Loja") {
-                          setSelectedCategory(cat.name)
-                          setShowPDV(true)
-                          setShowAI(false)
-                        } else {
-                          setSelectedCategory(cat.name)
-                          setSelectedService(null)
-                          setAttributes({})
-                        }
-                      }}
-                      className={`group relative overflow-hidden rounded-xl border text-sm transition-all ${
-                        isSelected ? "border-blue-500 ring-2 ring-blue-400" : "hover:border-blue-300"
-                      }`}
-                      style={{ aspectRatio: "3/2", maxHeight: "90px" }}
-                    >
-                      {image ? (
-                        <>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={image}
-                            alt={cat.name}
-                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <div className={`absolute inset-0 bg-gradient-to-t ${isSelected ? "from-blue-700/90" : "from-gray-900/70"} to-transparent`} />
-                        </>
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                          <span className="text-3xl">{cat.icon}</span>
-                        </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 p-2">
-                        <span className="block text-center text-sm font-bold leading-tight text-white drop-shadow-lg">
-                          {isSelected && "✓ "}{cat.name}
-                        </span>
-                      </div>
-                    </button>
-                  )
-                })}
+                {serviceCategories.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onClick={() => {
+                      if (cat.name === "PDV — Materiais de Loja") {
+                        setSelectedCategory(cat.name)
+                        setShowPDV(true)
+                        setShowAI(false)
+                      } else {
+                        setSelectedCategory(cat.name)
+                        setSelectedService(null)
+                        setAttributes({})
+                      }
+                    }}
+                    className={`flex flex-col items-center gap-1.5 rounded-xl border p-4 text-sm transition-all ${
+                      selectedCategory === cat.name ? "border-blue-500 bg-blue-50 text-blue-700 font-medium" : "hover:border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    <span className="text-2xl">{cat.icon}</span>
+                    <span className="leading-tight text-center">{cat.name}</span>
+                  </button>
+                ))}
               </div>
               <Button className="w-full" disabled={!canProceed()} onClick={() => setStep(1)}>
                 Próximo <ChevronRight className="ml-2 h-4 w-4" />
