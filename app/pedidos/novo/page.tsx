@@ -192,7 +192,9 @@ export default function NovoPedidoPage() {
       }).catch(() => {})
       router.push(`/pedidos/${data.id}`)
     } else {
-      alert("Erro ao criar pedido. Tente novamente.")
+      // Mostra erro real para diagnóstico
+      const msg = error?.message ?? error?.code ?? JSON.stringify(error) ?? "erro desconhecido"
+      alert(`Erro ao criar pedido: ${msg}`)
     }
   }
 
