@@ -62,7 +62,7 @@ export function PropostaForm({ requestId }: { requestId: string }) {
       return
     }
 
-    const { error: propError } = await supabase.from("proposals").insert({
+    const { data: newProposal, error: propError } = await supabase.from("proposals").insert({
       request_id: requestId,
       supplier_id: supplier.id,
       price_total: parseFloat(price),
@@ -70,7 +70,7 @@ export function PropostaForm({ requestId }: { requestId: string }) {
       payment_terms: payment || null,
       notes: notes || null,
       status: "pending",
-    })
+    }).select("id").single()
 
     setLoading(false)
     if (propError) {
@@ -80,6 +80,14 @@ export function PropostaForm({ requestId }: { requestId: string }) {
         setError("Erro ao enviar proposta. Tente novamente.")
       }
     } else {
+      // Notifica o comprador por e-mail (fire-and-forget)
+      if (newProposal?.id) {
+        fetch("/api/notify-proposal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "new_proposal", proposalId: newProposal.id, requestId }),
+        }).catch(() => {}) // silencia erro de e-mail — não bloqueia o fluxo
+      }
       setSuccess(true)
       router.refresh()
     }

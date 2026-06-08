@@ -1,0 +1,71 @@
+ROTAS DO SISTEMA — CotaVisu
+==================================================
+
+=== PÁGINAS (App Router Next.js) ===
+
+/ ................................................ Home (landing page)
+  Tipo: Static (revalidate 60s)
+  Descrição: Landing page com hero, categorias, pedidos recentes, stats, seção trust
+
+/login ........................................... Login
+  Tipo: Client Component
+  Descrição: Autenticação por e-mail + senha via Supabase Auth
+
+/cadastro ........................................ Cadastro
+  Tipo: Client Component
+  Descrição: Criação de conta comprador ou fornecedor
+
+/dashboard ....................................... Painel do usuário
+  Tipo: Client Component
+  Descrição: Dashboard personalizado por papel (comprador/fornecedor)
+
+/pedidos ......................................... Lista de pedidos abertos
+  Tipo: Server Component (revalidate 30s)
+  Descrição: Feed de pedidos com filtros por categoria
+
+/pedidos/novo ................................... Criar pedido
+  Tipo: Client Component
+  Descrição: Formulário multi-step com IA, categorias, especificações, medidas, PDV
+
+/pedidos/[id] ................................... Detalhe do pedido + comparador
+  Tipo: Client Component
+  Descrição: Detalhes do pedido, propostas reais, estimativas modo prateleira, formulário de proposta
+
+/meus-pedidos ................................... Pedidos do comprador
+  Tipo: Client Component
+  Descrição: Lista de pedidos criados pelo usuário logado
+
+/fornecedores ................................... Diretório de fornecedores
+  Tipo: Server Component
+  Descrição: Grid de fornecedores com avaliações e badges
+
+/admin ........................................... Painel administrativo
+  Tipo: Client Component
+  Descrição: Dashboard + CRUD de serviços padrão e produtos de prateleira (modo prateleira)
+
+=== APIs (Route Handlers) ===
+
+POST /api/sugerir-pedido ........................ IA para sugestão de pedido
+  Tipo: Dynamic (Server)
+  Descrição: Recebe descrição em texto livre, chama Claude Haiku (Anthropic),
+             retorna categoria, serviço, medidas e material sugeridos em JSON
+
+=== ROTAS SUPABASE (acesso direto via SDK) ===
+
+GET  service_categories ......................... Categorias de serviço
+GET  standard_services .......................... Serviços padrão (modo prateleira)
+GET  shelf_products ............................. Produtos de prateleira
+GET  service_requests ........................... Pedidos de orçamento
+POST service_requests ........................... Criar pedido
+GET  proposals .................................. Propostas de um pedido
+POST proposals .................................. Enviar proposta
+GET  supplier_profiles .......................... Perfis de fornecedor
+GET  reviews .................................... Avaliações
+GET  profiles ................................... Perfil do usuário logado
+
+=== AUTH (Supabase Auth) ===
+
+POST /auth/signup ............................... Cadastro (via supabase.auth.signUp)
+POST /auth/signin ............................... Login (via supabase.auth.signInWithPassword)
+POST /auth/signout .............................. Logout (via supabase.auth.signOut)
+GET  /auth/user ................................. Usuário logado (via supabase.auth.getUser)

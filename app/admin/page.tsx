@@ -127,11 +127,10 @@ export default function AdminPage() {
       </div>
 
       <Tabs defaultValue="dashboard">
-        <TabsList className="mb-6 grid w-full grid-cols-4">
+        <TabsList className="mb-6 grid w-full grid-cols-3">
           <TabsTrigger value="dashboard"><LayoutDashboard className="mr-2 h-4 w-4" /><span className="hidden sm:inline">Dashboard</span></TabsTrigger>
           <TabsTrigger value="services"><ShoppingBag className="mr-2 h-4 w-4" /><span className="hidden sm:inline">Serviços</span></TabsTrigger>
           <TabsTrigger value="products"><Package className="mr-2 h-4 w-4" /><span className="hidden sm:inline">Produtos</span></TabsTrigger>
-          <TabsTrigger value="users"><Users className="mr-2 h-4 w-4" /><span className="hidden sm:inline">Usuários</span></TabsTrigger>
         </TabsList>
 
         {/* Dashboard */}
@@ -279,13 +278,6 @@ export default function AdminPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="users">
-          <div className="rounded-xl border bg-gray-50 p-8 text-center text-gray-400">
-            <Users className="mx-auto mb-3 h-10 w-10 opacity-30" />
-            <p className="font-medium">Gestão de usuários</p>
-            <p className="text-sm">Disponível na próxima versão</p>
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   )

@@ -184,6 +184,12 @@ export default function NovoPedidoPage() {
 
     setLoading(false)
     if (!error && data) {
+      // Notifica fornecedores por e-mail (fire-and-forget)
+      fetch("/api/notify-proposal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "new_request", requestId: data.id }),
+      }).catch(() => {})
       router.push(`/pedidos/${data.id}`)
     } else {
       alert("Erro ao criar pedido. Tente novamente.")

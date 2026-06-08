@@ -18,13 +18,13 @@ export function TrustSection() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600">
               <BadgeCheck className="h-7 w-7 text-white" />
             </div>
-            <h3 className="mb-2 font-bold text-gray-900">Fornecedores verificados</h3>
+            <h3 className="mb-2 font-bold text-gray-900">Perfis completos</h3>
             <p className="text-sm text-gray-600">
-              Antes de aparecer na plataforma, cada fornecedor tem CNPJ confirmado e
-              passa por validação manual da nossa equipe.
+              Cada fornecedor cadastra seus serviços, região de atendimento e recebe
+              avaliações reais de clientes que já fecharam negócio.
             </p>
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-              <BadgeCheck className="h-3 w-3" /> Verificação ativa
+              <BadgeCheck className="h-3 w-3" /> Avaliações reais
             </div>
           </div>
 
