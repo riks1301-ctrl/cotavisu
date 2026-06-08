@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge"
 import { CheckCircle, ChevronRight, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
 import { serviceCategories, type ServiceConfig } from "@/lib/service-options"
-import { ProductPreview } from "@/components/product-preview"
 import { PriceCards } from "@/components/price-cards"
 import { UrgencyInline } from "@/components/urgency-bar"
 import { AISuggestion } from "@/components/ai-suggestion"
@@ -338,15 +337,6 @@ export default function NovoPedidoPage() {
                 <span className="font-medium text-sm">{selectedService.name}</span>
               </div>
 
-              {/* Preview ao vivo */}
-              <ProductPreview
-                serviceName={selectedService.name}
-                widthCm={widthCm}
-                heightCm={heightCm}
-                quantity={quantity}
-                attributes={attributes}
-              />
-
               {selectedService.attributes.map((attr) => (
                 <div key={attr.key}>
                   <Label className="mb-2 block">
@@ -463,17 +453,6 @@ export default function NovoPedidoPage() {
                   >+</button>
                 </div>
               </div>
-
-              {/* Preview proporcional */}
-              {selectedService && (
-                <ProductPreview
-                  serviceName={selectedService.name}
-                  widthCm={widthCm}
-                  heightCm={heightCm}
-                  quantity={quantity}
-                  attributes={attributes}
-                />
-              )}
 
               {/* Cards de preço estilo iFood */}
               {price && selectedService && (
