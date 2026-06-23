@@ -10,9 +10,15 @@
 
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM_EMAIL ?? "noreply@cotavisu.com.br"
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cotavisu.vercel.app"
+
+/** Instancia Resend só quando a chave existe — evita quebrar build/dev sem RESEND_API_KEY */
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY
+  if (!key || key.startsWith("re_placeholder")) return null
+  return new Resend(key)
+}
 
 // Silencia erros de e-mail em dev se chave não configurada
 function safeLog(action: string, error?: any) {
@@ -33,7 +39,8 @@ export async function sendNewProposalEmail(params: {
   deliveryDays: number
   requestId: string
 }) {
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY.startsWith("re_placeholder")) {
+  const resend = getResend()
+  if (!resend) {
     safeLog("sendNewProposalEmail: chave não configurada, pulando")
     return
   }
@@ -86,7 +93,8 @@ export async function sendProposalAcceptedEmail(params: {
   priceTotal: number
   requestId: string
 }) {
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY.startsWith("re_placeholder")) {
+  const resend = getResend()
+  if (!resend) {
     safeLog("sendProposalAcceptedEmail: chave não configurada, pulando")
     return
   }
@@ -141,7 +149,8 @@ export async function sendNewRequestEmail(params: {
   deadlineDays: number
   requestId: string
 }) {
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY.startsWith("re_placeholder")) {
+  const resend = getResend()
+  if (!resend) {
     safeLog("sendNewRequestEmail: chave não configurada, pulando")
     return
   }

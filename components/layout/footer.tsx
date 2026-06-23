@@ -16,9 +16,9 @@ export function Footer() {
             O comparador de comunicação visual do Brasil.
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
-            <Link href="#" className="hover:text-gray-800">Termos</Link>
-            <Link href="#" className="hover:text-gray-800">Privacidade</Link>
-            <Link href="#" className="hover:text-gray-800">Contato</Link>
+            <Link href="/termos" className="hover:text-gray-800">Termos</Link>
+            <Link href="/privacidade" className="hover:text-gray-800">Privacidade</Link>
+            <a href="mailto:contato@cotavisu.com.br" className="hover:text-gray-800">Contato</a>
           </div>
         </div>
       </div>

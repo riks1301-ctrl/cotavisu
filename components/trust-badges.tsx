@@ -8,7 +8,7 @@ export function TrustSection() {
         {/* Headline */}
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-gray-900">Por que confiar no CotaVisu?</h2>
-          <p className="mt-2 text-gray-500">Cada pedido é protegido. Cada fornecedor é verificado.</p>
+          <p className="mt-2 text-gray-500">Cada pedido é protegido. Comparamos — você decide com quem fechar.</p>
         </div>
 
         {/* 3 pilares */}
@@ -63,9 +63,9 @@ export function TrustSection() {
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {[
               { icon: <Users className="h-5 w-5 text-blue-600" />, value: "100%", label: "Gratuito para compradores" },
-              { icon: <BadgeCheck className="h-5 w-5 text-green-600" />, value: "Verificados", label: "Todos os fornecedores" },
-              { icon: <Star className="h-5 w-5 text-yellow-500" />, value: "Reais", label: "Avaliações verificadas" },
-              { icon: <Clock className="h-5 w-5 text-purple-600" />, value: "24h", label: "Tempo médio de resposta" },
+              { icon: <BadgeCheck className="h-5 w-5 text-green-600" />, value: "Real", label: "Propostas de gráficas" },
+              { icon: <Star className="h-5 w-5 text-yellow-500" />, value: "Compare", label: "Preço e prazo" },
+              { icon: <Clock className="h-5 w-5 text-purple-600" />, value: "WhatsApp", label: "Após escolher" },
             ].map((item) => (
               <div key={item.label} className="text-center">
                 <div className="mb-1 flex justify-center">{item.icon}</div>

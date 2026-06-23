@@ -39,10 +39,24 @@ export default function NovoPedidoPage() {
 
   const category = serviceCategories.find((c) => c.name === selectedCategory)
 
-  async function handlePDVSubmit(items: PDVItemSelected[], desc: string) {
-    setLoading(true)
+  async function requireLoggedInBuyer() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      router.push(`/login?redirect=${encodeURIComponent("/pedidos/novo")}`)
+      return null
+    }
+    const { data: prof } = await supabase.from("profiles").select("name").eq("id", user.id).single()
+    return { user, profileName: prof?.name ?? user.email?.split("@")[0] ?? "Comprador" }
+  }
+
+  async function handlePDVSubmit(items: PDVItemSelected[], desc: string) {
+    const auth = await requireLoggedInBuyer()
+    if (!auth) return
+
+    setLoading(true)
+    const supabase = createClient()
+    const { user, profileName } = auth
 
     const specsText = items.map((item) => {
       const attrs = Object.entries(item.attributes)
@@ -67,11 +81,11 @@ export default function NovoPedidoPage() {
         height_m: null,
         quantity: items.reduce((acc, i) => acc + parseInt(i.quantity), 0),
         city: city || "A definir",
-        state: state || "BR",
+        state: state ? state.toUpperCase() : "BR",
         deadline_days: parseInt(deadlineDays),
         description: [specsText, desc].filter(Boolean).join("\n\n"),
-        buyer_name: buyerName || null,
-        buyer_id: user?.id ?? null,
+        buyer_name: buyerName || profileName,
+        buyer_id: user.id,
         status: "open",
       })
       .select()
@@ -79,6 +93,11 @@ export default function NovoPedidoPage() {
 
     setLoading(false)
     if (!error && data) {
+      fetch("/api/notify-proposal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "new_request", requestId: data.id }),
+      }).catch(() => {})
       router.push(`/pedidos/${data.id}`)
     } else {
       alert("Erro ao criar pedido PDV.")
@@ -144,9 +163,12 @@ export default function NovoPedidoPage() {
   }
 
   async function handleSubmit() {
+    const auth = await requireLoggedInBuyer()
+    if (!auth) return
+
     setLoading(true)
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { user, profileName } = auth
 
     // Monta texto das especificações selecionadas
     const specsText = Object.entries(attributes)
@@ -175,8 +197,8 @@ export default function NovoPedidoPage() {
         state: state.toUpperCase(),
         deadline_days: parseInt(deadlineDays),
         description: descFull || null,
-        buyer_name: buyerName || null,
-        buyer_id: user?.id ?? null,
+        buyer_name: buyerName || profileName,
+        buyer_id: user.id,
         status: "open",
       })
       .select()
@@ -569,7 +591,7 @@ export default function NovoPedidoPage() {
                         (R$ {price.perUnit.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}/{price.unitLabel})
                       </span>
                     </p>
-                    <p className="text-xs text-gray-400">Baseado em pedidos similares na região</p>
+                    <p className="text-xs text-gray-400">Estimativa de referência — não é proposta de fornecedor</p>
                   </div>
                 )}
               </div>
@@ -588,7 +610,7 @@ export default function NovoPedidoPage() {
                 </Button>
               </div>
               <p className="text-center text-xs text-gray-400">
-                Pedido fica aberto por 7 dias · Gratuito para compradores
+                Pedido fica aberto por 7 dias · Gratuito · É necessário estar logado para publicar
               </p>
             </div>
           )}

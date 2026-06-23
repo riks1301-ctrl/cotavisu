@@ -55,7 +55,7 @@ export function PriceCards({ price, serviceName, quantity }: Props) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-gray-700">O que esperar de propostas reais</p>
-        <span className="text-xs text-gray-400">baseado em {Math.floor(Math.random() * 40 + 15)} pedidos similares</span>
+        <span className="text-xs text-gray-400">faixa estimada · referência de mercado</span>
       </div>
 
       <div className="grid grid-cols-3 gap-2">

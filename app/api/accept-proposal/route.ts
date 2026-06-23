@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
 import { sendProposalAcceptedEmail } from "@/lib/emails"
+import { getSupabaseAdmin } from "@/lib/supabase-admin"
+import { normalizeWhatsAppPhone } from "@/lib/whatsapp"
 
-// Cliente server-side com service_role — nunca exposto ao browser
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+type SupplierJoin = {
+  company_name: string
+  user_id: string
+  whatsapp: string | null
+}
 
 export async function POST(req: NextRequest) {
   try {
-    // ── 1. Valida autenticação via Bearer token ──────────────
+    const supabaseAdmin = getSupabaseAdmin()
     const authHeader = req.headers.get("authorization")
     const token = authHeader?.replace("Bearer ", "").trim()
 
@@ -19,14 +20,12 @@ export async function POST(req: NextRequest) {
     }
 
     const { data: { user }, error: authErr } = await supabaseAdmin.auth.getUser(token)
-
     if (authErr || !user) {
       return NextResponse.json({ error: "Token inválido ou expirado" }, { status: 401 })
     }
 
-    // ── 2. Valida payload ────────────────────────────────────
     const body = await req.json()
-    const { proposalId, requestId } = body
+    const { proposalId, requestId, buyerWhatsapp, consentShareContact } = body
 
     if (!proposalId || !requestId) {
       return NextResponse.json(
@@ -35,8 +34,21 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // ── 3. Verifica ownership antes de chamar a RPC ──────────
-    // Evita custo da RPC em tentativas inválidas
+    if (!consentShareContact) {
+      return NextResponse.json(
+        { error: "É necessário autorizar o compartilhamento do WhatsApp." },
+        { status: 400 }
+      )
+    }
+
+    const normalizedBuyerWa = buyerWhatsapp ? normalizeWhatsAppPhone(buyerWhatsapp) : null
+    if (!normalizedBuyerWa) {
+      return NextResponse.json(
+        { error: "Informe um WhatsApp válido com DDD." },
+        { status: 400 }
+      )
+    }
+
     const { data: request, error: reqErr } = await supabaseAdmin
       .from("service_requests")
       .select("buyer_id, service_type, buyer_name, city, state")
@@ -54,13 +66,17 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // ── 4. Chama a RPC transacional (service_role only) ──────
+    await supabaseAdmin
+      .from("profiles")
+      .update({ phone: buyerWhatsapp })
+      .eq("id", user.id)
+
     const { data: rpcResult, error: rpcErr } = await supabaseAdmin.rpc(
       "accept_proposal",
       {
         p_proposal_id: proposalId,
-        p_request_id:  requestId,
-        p_buyer_id:    user.id,
+        p_request_id: requestId,
+        p_buyer_id: user.id,
       }
     )
 
@@ -73,37 +89,43 @@ export async function POST(req: NextRequest) {
     }
 
     if (!rpcResult?.success) {
-      // Retorna o erro semântico vindo da função SQL (ex: "Pedido não está aberto")
       return NextResponse.json(
         { error: rpcResult?.error ?? "Operação recusada" },
         { status: 409 }
       )
     }
 
-    // ── 5. Notifica o fornecedor por e-mail (fora da transação)
-    // Fire-and-forget: falha não reverte o aceite
-    try {
-      const { data: proposal } = await supabaseAdmin
-        .from("proposals")
-        .select("price_total, supplier_profiles(company_name, user_id)")
-        .eq("id", proposalId)
-        .single()
+    const { data: proposal } = await supabaseAdmin
+      .from("proposals")
+      .select("price_total, delivery_days, supplier_profiles(company_name, user_id, whatsapp)")
+      .eq("id", proposalId)
+      .single()
 
-      const supplierUserId = (proposal?.supplier_profiles as any)?.user_id
-      if (supplierUserId) {
+    const supplierRaw = proposal?.supplier_profiles
+    const supplier = (Array.isArray(supplierRaw) ? supplierRaw[0] : supplierRaw) as SupplierJoin | null
+    let supplierWhatsApp = supplier?.whatsapp ?? null
+
+    if (!supplierWhatsApp && supplier?.user_id) {
+      const { data: supProf } = await supabaseAdmin
+        .from("profiles")
+        .select("phone")
+        .eq("id", supplier.user_id)
+        .single()
+      supplierWhatsApp = supProf?.phone ?? null
+    }
+
+    try {
+      if (supplier?.user_id) {
         const { data: supplierProfile } = await supabaseAdmin
           .from("profiles")
           .select("email, name")
-          .eq("id", supplierUserId)
+          .eq("id", supplier.user_id)
           .single()
 
         if (supplierProfile?.email) {
           await sendProposalAcceptedEmail({
             supplierEmail: supplierProfile.email,
-            supplierName:
-              (proposal?.supplier_profiles as any)?.company_name ??
-              supplierProfile.name ??
-              "Fornecedor",
+            supplierName: supplier?.company_name ?? supplierProfile.name ?? "Fornecedor",
             buyerName: request.buyer_name ?? "Comprador",
             serviceType: request.service_type,
             priceTotal: proposal?.price_total ?? 0,
@@ -112,16 +134,22 @@ export async function POST(req: NextRequest) {
         }
       }
     } catch (emailErr) {
-      // E-mail falhou — aceite já está gravado, não reverter
       console.error("Erro ao enviar e-mail pós-aceite:", emailErr)
     }
 
     return NextResponse.json({
       success: true,
       closedAt: rpcResult.closed_at,
+      supplier: {
+        companyName: supplier?.company_name ?? "Fornecedor",
+        whatsapp: supplierWhatsApp,
+      },
+      buyerWhatsapp: buyerWhatsapp,
+      serviceType: request.service_type,
+      priceTotal: proposal?.price_total ?? 0,
+      deliveryDays: proposal?.delivery_days ?? 0,
     })
-
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Erro inesperado em accept-proposal:", err)
     return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
   }

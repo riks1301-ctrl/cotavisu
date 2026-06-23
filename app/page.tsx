@@ -43,8 +43,8 @@ export default async function Home() {
             <span className="text-blue-200">comunicação visual</span>
           </h1>
           <p className="mb-8 text-lg text-blue-100 sm:text-xl">
-            Crie um pedido, receba propostas de fornecedores verificados e escolha
-            o melhor preço, prazo ou avaliação — tudo em um só lugar.
+            Crie um pedido, compare propostas reais de gráficas da sua região e escolha
+            o melhor preço ou prazo — a negociação segue direto com quem você escolher.
           </p>
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <ButtonLink href="/pedidos/novo" size="lg" className="bg-white text-blue-700 hover:bg-blue-50">
@@ -55,16 +55,15 @@ export default async function Home() {
             </ButtonLink>
           </div>
           <p className="mt-4 text-sm text-blue-200">
-            Sem cadastro para ver pedidos. Gratuito para compradores.
+            Ver pedidos abertos sem cadastro. Login gratuito para publicar e escolher propostas.
           </p>
 
-          {/* Mini badges de confiança */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             {[
-              "✅ Fornecedores verificados",
+              "📊 Compare preços lado a lado",
               "🔒 Dados protegidos (LGPD)",
-              "⚡ Respostas em até 24h",
-              "🆓 Grátis para compradores",
+              "💬 Feche no WhatsApp com a gráfica",
+              "🆓 Grátis para quem pede",
             ].map((item) => (
               <span
                 key={item}
@@ -95,10 +94,10 @@ export default async function Home() {
             {/* Empresas cadastradas */}
             <div className="text-center">
               <p className="text-3xl font-extrabold text-blue-600">
-                {totalSuppliers > 0 ? `${totalSuppliers}+` : "100+"}
+                {totalSuppliers > 0 ? totalSuppliers : "—"}
               </p>
-              <p className="mt-1 text-sm font-medium text-gray-700">Empresas cadastradas</p>
-              <p className="text-xs text-gray-400">fornecedores verificados</p>
+              <p className="mt-1 text-sm font-medium text-gray-700">Gráficas cadastradas</p>
+              <p className="text-xs text-gray-400">na plataforma</p>
             </div>
 
             {/* Cobertura */}
@@ -123,13 +122,13 @@ export default async function Home() {
             <div className="text-center">
               <div className="flex items-center justify-center gap-1">
                 <p className="text-3xl font-extrabold text-blue-600">
-                  {avgRating ?? "4.8"}
+                  {avgRating ?? "—"}
                 </p>
-                <Star className="h-6 w-6 fill-yellow-400 text-yellow-400 mb-1" />
+                {avgRating && <Star className="h-6 w-6 fill-yellow-400 text-yellow-400 mb-1" />}
               </div>
               <p className="mt-1 text-sm font-medium text-gray-700">Avaliação média</p>
               <p className="text-xs text-gray-400">
-                {reviewsList.length > 0 ? `${reviewsList.length} avaliações` : "dos fornecedores"}
+                {reviewsList.length > 0 ? `${reviewsList.length} avaliações` : "em breve"}
               </p>
             </div>
 
@@ -146,9 +145,9 @@ export default async function Home() {
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
             {[
-              { step: "1", icon: <Zap className="h-6 w-6 text-blue-600" />, title: "Crie seu pedido", desc: "Informe o serviço, medidas, quantidade, cidade e prazo desejado. Leva menos de 2 minutos." },
-              { step: "2", icon: <Clock className="h-6 w-6 text-green-600" />, title: "Receba propostas", desc: "Fornecedores verificados da sua região enviam propostas com preço, prazo e condições." },
-              { step: "3", icon: <CheckCircle className="h-6 w-6 text-purple-600" />, title: "Compare e escolha", desc: "Veja lado a lado: menor preço, menor prazo, melhor avaliação. Escolha com segurança." },
+              { step: "1", icon: <Zap className="h-6 w-6 text-blue-600" />, title: "Crie seu pedido", desc: "Descreva o serviço, medidas e cidade. Login gratuito para publicar." },
+              { step: "2", icon: <Clock className="h-6 w-6 text-green-600" />, title: "Receba propostas", desc: "Gráficas da sua região enviam preço, prazo e condições reais." },
+              { step: "3", icon: <CheckCircle className="h-6 w-6 text-purple-600" />, title: "Compare e escolha", desc: "Veja lado a lado e feche no WhatsApp com a gráfica escolhida." },
             ].map((item) => (
               <div key={item.step} className="relative rounded-xl border bg-white p-6 shadow-sm">
                 <div className="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
@@ -214,7 +213,10 @@ export default async function Home() {
                     </div>
                     <h3 className="mb-1 font-semibold">{req.service_type}</h3>
                     <p className="mb-3 text-sm text-gray-500">
-                      {req.width_m}m × {req.height_m}m · {req.quantity} {req.quantity > 1 ? "unidades" : "unidade"}
+                      {req.width_m && req.height_m
+                        ? `${req.width_m}m × ${req.height_m}m · `
+                        : ""}
+                      {req.quantity} {req.quantity > 1 ? "unidades" : "unidade"}
                     </p>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-1 text-xs text-gray-400">
@@ -240,7 +242,7 @@ export default async function Home() {
             {[
               { icon: <TrendingDown className="h-8 w-8 text-blue-200" />, title: "Redução de custos", desc: "Compradores economizam ao comparar múltiplas propostas lado a lado." },
               { icon: <Clock className="h-8 w-8 text-blue-200" />, title: "Menos tempo perdido", desc: "Chega de ligar pra vários fornecedores. Receba todas as propostas em um lugar." },
-              { icon: <Star className="h-8 w-8 text-blue-200" />, title: "Fornecedores verificados", desc: "Avaliações reais de clientes. Escolha com confiança, não no escuro." },
+              { icon: <Star className="h-8 w-8 text-blue-200" />, title: "Intermediação transparente", desc: "Comparamos orçamentos. A venda e o pagamento são diretos com a gráfica que você escolher." },
             ].map((b) => (
               <div key={b.title} className="text-center">
                 <div className="mb-3 flex justify-center">{b.icon}</div>

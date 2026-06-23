@@ -81,6 +81,7 @@ create table if not exists supplier_profiles (
   description text,
   services text[],
   cities_served text[],
+  whatsapp varchar(20),
   rating_avg decimal(3,2) default 0,
   total_reviews int default 0,
   is_premium boolean default false,

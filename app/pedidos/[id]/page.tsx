@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { PropostaForm, PropostaLoginPrompt } from "@/components/proposta-form"
+import { AcceptProposalDialog } from "@/components/accept-proposal-dialog"
+import { WhatsAppHandoff } from "@/components/whatsapp-handoff"
 import {
   Award, CheckCircle, Clock, Info, Loader2,
   MapPin, MessageCircle, Package, TrendingDown, XCircle,
@@ -37,8 +39,18 @@ export default function PedidoPage() {
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [accepting, setAccepting] = useState<string | null>(null) // proposalId em processamento
+  const [accepting, setAccepting] = useState<string | null>(null)
   const [acceptError, setAcceptError] = useState("")
+  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false)
+  const [pendingProposalId, setPendingProposalId] = useState<string | null>(null)
+  const [buyerWhatsapp, setBuyerWhatsapp] = useState("")
+  const [handoff, setHandoff] = useState<{
+    supplierName: string
+    supplierWhatsApp: string
+    serviceType: string
+    priceTotal: number
+    deliveryDays: number
+  } | null>(null)
 
   async function loadData() {
     const supabase = createClient()
@@ -46,7 +58,7 @@ export default function PedidoPage() {
       supabase.from("service_requests").select("*").eq("id", id).single(),
       supabase
         .from("proposals")
-        .select("*, supplier_profiles(company_name, rating_avg, total_reviews, is_premium)")
+        .select("*, supplier_profiles(company_name, rating_avg, total_reviews, is_premium, whatsapp)")
         .eq("request_id", id)
         .order("price_total"),
       supabase.auth.getUser(),
@@ -56,8 +68,9 @@ export default function PedidoPage() {
     setUser(user)
 
     if (user) {
-      const { data: prof } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+      const { data: prof } = await supabase.from("profiles").select("role, phone").eq("id", user.id).single()
       setProfile(prof)
+      if (prof?.phone) setBuyerWhatsapp(prof.phone)
     }
 
     if (reqRes.data) {
@@ -83,13 +96,22 @@ export default function PedidoPage() {
 
   useEffect(() => { loadData() }, [id])
 
-  async function handleAccept(proposalId: string) {
-    if (!confirm("Confirmar aceite desta proposta? As outras propostas serão recusadas e o pedido será fechado.")) return
-    setAccepting(proposalId)
+  function openAcceptDialog(proposalId: string) {
+    if (!user) {
+      window.location.href = `/login?redirect=${encodeURIComponent(`/pedidos/${id}`)}`
+      return
+    }
+    setPendingProposalId(proposalId)
+    setAcceptError("")
+    setAcceptDialogOpen(true)
+  }
+
+  async function confirmAccept() {
+    if (!pendingProposalId) return
+    setAccepting(pendingProposalId)
     setAcceptError("")
 
     try {
-      // Obtém o token da sessão atual para autenticar a chamada server-side
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
 
@@ -105,14 +127,28 @@ export default function PedidoPage() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ proposalId, requestId: id }),
+        body: JSON.stringify({
+          proposalId: pendingProposalId,
+          requestId: id,
+          buyerWhatsapp,
+          consentShareContact: true,
+        }),
       })
       const data = await res.json()
 
       if (!res.ok) {
         setAcceptError(data.error ?? "Erro ao aceitar proposta.")
       } else {
-        // Recarrega dados para mostrar estado atualizado
+        setAcceptDialogOpen(false)
+        if (data.supplier?.whatsapp) {
+          setHandoff({
+            supplierName: data.supplier.companyName,
+            supplierWhatsApp: data.supplier.whatsapp,
+            serviceType: data.serviceType,
+            priceTotal: data.priceTotal,
+            deliveryDays: data.deliveryDays,
+          })
+        }
         await loadData()
       }
     } catch {
@@ -120,6 +156,10 @@ export default function PedidoPage() {
     } finally {
       setAccepting(null)
     }
+  }
+
+  async function handleAccept(proposalId: string) {
+    openAcceptDialog(proposalId)
   }
 
   if (loading) return (
@@ -142,7 +182,7 @@ export default function PedidoPage() {
   const isClosed = req.status === "closed"
   const isSupplier = profile?.role === "supplier"
   const isBuyer = profile?.role === "buyer"
-  const isBuyerOwner = isBuyer && (req.buyer_id === user?.id || !req.buyer_id)
+  const isBuyerOwner = isBuyer && user && req.buyer_id === user.id
   const reqStatus = statusLabel[req.status] ?? statusLabel.open
 
   return (
@@ -205,15 +245,27 @@ export default function PedidoPage() {
           <div className="flex items-center gap-3">
             <CheckCircle className="h-6 w-6 text-green-600 shrink-0" />
             <div>
-              <p className="font-semibold text-green-800">Pedido fechado com sucesso!</p>
+              <p className="font-semibold text-green-800">Proposta escolhida!</p>
               <p className="text-sm text-green-700">
-                Proposta de <strong>{acceptedProposal.supplier_profiles?.company_name}</strong> aceita por{" "}
+                <strong>{acceptedProposal.supplier_profiles?.company_name}</strong> —{" "}
                 <strong>R$ {acceptedProposal.price_total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong> em{" "}
                 <strong>{acceptedProposal.delivery_days} dias</strong>.
+                {" "}Feche os detalhes diretamente com a gráfica.
               </p>
             </div>
           </div>
         </div>
+      )}
+
+      {(handoff?.supplierWhatsApp || acceptedProposal?.supplier_profiles?.whatsapp) && (
+        <WhatsAppHandoff
+          supplierName={handoff?.supplierName ?? acceptedProposal?.supplier_profiles?.company_name ?? "Fornecedor"}
+          supplierWhatsApp={handoff?.supplierWhatsApp ?? acceptedProposal?.supplier_profiles?.whatsapp ?? ""}
+          serviceType={handoff?.serviceType ?? req.service_type}
+          priceTotal={handoff?.priceTotal ?? acceptedProposal?.price_total ?? 0}
+          deliveryDays={handoff?.deliveryDays ?? acceptedProposal?.delivery_days ?? 0}
+          buyerWhatsApp={buyerWhatsapp}
+        />
       )}
 
       {/* Erro de aceite */}
@@ -321,7 +373,7 @@ export default function PedidoPage() {
                           <Button
                             size="sm"
                             disabled={accepting === p.id}
-                            onClick={() => handleAccept(p.id)}
+                            onClick={() => openAcceptDialog(p.id)}
                             className="min-w-[90px]"
                           >
                             {accepting === p.id
@@ -445,6 +497,18 @@ export default function PedidoPage() {
           <p className="text-sm">Este pedido está fechado. O comprador já selecionou uma proposta.</p>
         </div>
       )}
+
+      <AcceptProposalDialog
+        open={acceptDialogOpen}
+        onOpenChange={setAcceptDialogOpen}
+        supplierName={
+          proposals.find((p) => p.id === pendingProposalId)?.supplier_profiles?.company_name ?? "Fornecedor"
+        }
+        buyerWhatsApp={buyerWhatsapp}
+        onBuyerWhatsAppChange={setBuyerWhatsapp}
+        onConfirm={confirmAccept}
+        loading={!!accepting}
+      />
     </div>
   )
 }

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Building2, Loader2, ShoppingCart } from "lucide-react"
 import { signUp } from "@/lib/auth"
+import { isValidWhatsApp } from "@/lib/whatsapp"
 
 export default function CadastroPage() {
   const router = useRouter()
@@ -17,6 +18,8 @@ export default function CadastroPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [whatsapp, setWhatsapp] = useState("")
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
@@ -24,9 +27,16 @@ export default function CadastroPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (password.length < 6) { setError("Senha deve ter pelo menos 6 caracteres."); return }
+    if (!acceptedTerms) { setError("Aceite os Termos de Uso e a Política de Privacidade."); return }
+    if (role === "supplier" && !isValidWhatsApp(whatsapp)) {
+      setError("Informe um WhatsApp comercial válido com DDD.")
+      return
+    }
     setLoading(true)
     setError("")
-    const { error } = await signUp(email, password, name, role)
+    const { error } = await signUp(email, password, name, role, {
+      whatsapp: role === "supplier" ? whatsapp : undefined,
+    })
     setLoading(false)
     if (error) {
       setError(error.message === "User already registered" ? "Este e-mail já está cadastrado." : "Erro ao criar conta. Tente novamente.")
@@ -128,17 +138,48 @@ export default function CadastroPage() {
                 />
               </div>
 
+              {role === "supplier" && (
+                <div>
+                  <Label htmlFor="whatsapp">WhatsApp comercial *</Label>
+                  <Input
+                    id="whatsapp"
+                    placeholder="(41) 99999-9999"
+                    value={whatsapp}
+                    onChange={(e) => setWhatsapp(e.target.value)}
+                    required
+                  />
+                  <p className="mt-1 text-xs text-gray-400">
+                    Compartilhado com o comprador apenas se ele escolher sua proposta.
+                  </p>
+                </div>
+              )}
+
+              <label className="flex items-start gap-2 text-sm text-gray-600">
+                <input
+                  type="checkbox"
+                  className="mt-1"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  required
+                />
+                <span>
+                  Li e aceito os{" "}
+                  <Link href="/termos" className="text-blue-600 underline" target="_blank">Termos de Uso</Link>
+                  {" "}e a{" "}
+                  <Link href="/privacidade" className="text-blue-600 underline" target="_blank">Política de Privacidade</Link>.
+                </span>
+              </label>
+
               {error && (
                 <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>
               )}
 
-              <Button className="w-full" type="submit" disabled={loading}>
+              <Button className="w-full" type="submit" disabled={loading || !acceptedTerms}>
                 {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Criando conta...</> : "Criar conta grátis"}
               </Button>
 
               <p className="text-center text-xs text-gray-400">
-                Ao criar conta você concorda com os{" "}
-                <Link href="#" className="underline">Termos de Uso</Link>
+                Conta gratuita. Publicar pedidos exige login.
               </p>
             </form>
           </CardContent>

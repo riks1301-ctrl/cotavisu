@@ -37,27 +37,27 @@ export function PropostaForm({ requestId }: { requestId: string }) {
     // Busca ou cria supplier_profile
     let { data: supplier } = await supabase
       .from("supplier_profiles")
-      .select("id")
+      .select("id, whatsapp, company_name")
       .eq("user_id", user.id)
       .single()
 
     if (!supplier) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("name")
-        .eq("id", user.id)
-        .single()
-
-      const { data: newSupplier } = await supabase
-        .from("supplier_profiles")
-        .insert({ user_id: user.id, company_name: profile?.name ?? "Minha Empresa", is_active: true })
-        .select("id")
-        .single()
-      supplier = newSupplier
+      router.push("/perfil")
+      setError("Complete seu perfil de fornecedor antes de enviar propostas.")
+      setLoading(false)
+      return
     }
 
-    if (!supplier) {
-      setError("Erro ao identificar fornecedor.")
+    if (!supplier.whatsapp) {
+      router.push("/perfil")
+      setError("Cadastre seu WhatsApp no perfil para enviar propostas.")
+      setLoading(false)
+      return
+    }
+
+    if (supplier.company_name === "Minha Empresa" || !supplier.company_name?.trim()) {
+      router.push("/perfil")
+      setError("Informe o nome da sua empresa no perfil.")
       setLoading(false)
       return
     }
