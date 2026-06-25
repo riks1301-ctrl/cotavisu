@@ -16,6 +16,7 @@ import { UrgencyInline } from "@/components/urgency-bar"
 import { AISuggestion } from "@/components/ai-suggestion"
 import { PDVBuilder, type PDVItemSelected } from "@/components/pdv-builder"
 import { CategoryPicker } from "@/components/category-picker"
+import { CategoryQuickPick } from "@/components/category-quick-pick"
 import { PedidoResumoSidebar } from "@/components/pedido-resumo-sidebar"
 
 const MACRO_STEPS = ["Descrever", "Detalhar", "Publicar"]
@@ -279,7 +280,7 @@ export default function NovoPedidoPage() {
   }
 
   const price = estimatedPrice()
-  const showNav = !showPDV && !(step === 0 && showAI)
+  const showNav = !showPDV && !(step === 0 && showAI && !selectedCategory)
 
   const sidebar = (
     <PedidoResumoSidebar
@@ -368,36 +369,50 @@ export default function NovoPedidoPage() {
         {/* Main */}
         <Card className="overflow-hidden">
           <CardContent className="p-6 sm:p-8">
-            {/* Step 0 — IA ou categorias (nunca os dois) */}
-            {step === 0 && showAI && (
-              <AISuggestion
-                large
-                onApply={applyAISuggestion}
-                onSkip={() => setShowAI(false)}
-              />
-            )}
+            {/* Step 0 — IA + atalhos de categoria (ícones) sempre visíveis */}
+            {step === 0 && (
+              <div className="space-y-8">
+                {showAI && (
+                  <AISuggestion
+                    large
+                    onApply={applyAISuggestion}
+                    onSkip={() => setShowAI(false)}
+                  />
+                )}
 
-            {step === 0 && !showAI && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    Qual tipo de serviço você precisa?
-                  </h2>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Selecione a categoria do seu projeto
-                  </p>
+                {!showAI && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAI(true)}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    ← Usar assistente com IA
+                  </button>
+                )}
+
+                <div className={showAI ? "border-t pt-8" : ""}>
+                  {showAI && (
+                    <p className="mb-4 text-sm text-gray-500">
+                      Ou escolha a categoria diretamente:
+                    </p>
+                  )}
+                  <CategoryQuickPick
+                    selected={selectedCategory}
+                    onSelect={handleCategorySelect}
+                  />
                 </div>
-                <CategoryPicker
-                  selected={selectedCategory}
-                  onSelect={handleCategorySelect}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowAI(true)}
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  ← Voltar para o assistente com IA
-                </button>
+
+                {!showAI && (
+                  <div className="border-t pt-8">
+                    <p className="mb-4 text-sm text-gray-500">
+                      Prefere ver com fotos? Escolha abaixo:
+                    </p>
+                    <CategoryPicker
+                      selected={selectedCategory}
+                      onSelect={handleCategorySelect}
+                    />
+                  </div>
+                )}
               </div>
             )}
 
@@ -666,8 +681,8 @@ export default function NovoPedidoPage() {
           </CardContent>
         </Card>
 
-        {/* Sidebar — oculta no passo IA para foco */}
-        <div className={step === 0 && showAI ? "hidden lg:block" : ""}>
+        {/* Sidebar — oculta só no passo IA sem categoria selecionada */}
+        <div className={step === 0 && showAI && !selectedCategory ? "hidden lg:block" : ""}>
           {sidebar}
         </div>
       </div>
