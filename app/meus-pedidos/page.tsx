@@ -67,40 +67,40 @@ export default function MeusPedidosPage() {
           <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {requests.map((req) => {
             const st = statusLabel[req.status] ?? statusLabel.open
             return (
-              <Card key={req.id} className="hover:shadow-lg transition-shadow">
-                <CardContent>
-                  <div className="mb-4 flex items-start justify-between">
+              <Card key={req.id} className="hover:shadow-xl transition-all">
+                <CardContent className="flex flex-col gap-5">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant="secondary">{req.category}</Badge>
-                      <span className={`rounded-full px-3 py-1 ${type.caption} font-medium ${st.color}`}>{st.label}</span>
+                      <span className={`rounded-full px-3 py-1 ${type.label} font-medium ${st.color}`}>{st.label}</span>
                     </div>
-                    <span className={type.caption}>
+                    <span className={`shrink-0 ${type.label} text-gray-500`}>
                       {new Date(req.created_at).toLocaleDateString("pt-BR")}
                     </span>
                   </div>
 
-                  <h3 className={`mb-2 ${type.cardTitle}`}>{req.service_type}</h3>
+                  <h3 className={type.cardTitle}>{req.service_type}</h3>
 
-                  <div className={`mb-5 grid grid-cols-2 gap-3 ${type.caption} sm:grid-cols-4`}>
-                    <div className="flex items-center gap-1.5">
-                      <Package className="h-4 w-4" /> {req.width_m}m × {req.height_m}m · {req.quantity}un
+                  <div className={`grid grid-cols-2 gap-3 ${type.body} text-gray-700 sm:grid-cols-4`}>
+                    <div className="flex items-center gap-2">
+                      <Package className="h-5 w-5 shrink-0 text-gray-400" /> {req.width_m}m × {req.height_m}m · {req.quantity}un
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4" /> {req.city}/{req.state}
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 shrink-0 text-gray-400" /> {req.city}/{req.state}
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="h-4 w-4" /> Prazo: {req.deadline_days} dias
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 shrink-0 text-gray-400" /> Prazo: {req.deadline_days} dias
                     </div>
-                    <div>
+                    <div className="text-gray-500">
                       Expira: {new Date(req.expires_at).toLocaleDateString("pt-BR")}
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-3 pt-2">
                     <ButtonLink href={`/pedidos/${req.id}`} size="sm" className="flex-1" variant="outline">
                       Ver propostas
                     </ButtonLink>

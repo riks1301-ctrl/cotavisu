@@ -73,10 +73,10 @@ export default function FornecedoresPage() {
           )}
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-2 2xl:grid-cols-3">
           {filtered.map((s) => (
-            <Card key={s.id} className="hover:shadow-lg transition-shadow">
-              <CardContent>
+            <Card key={s.id} className="hover:shadow-xl transition-all">
+              <CardContent className="flex flex-col gap-5">
                 <div className="mb-4 flex items-start justify-between">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold text-blue-600">
                     {s.company_name?.[0] ?? "?"}
@@ -102,7 +102,7 @@ export default function FornecedoresPage() {
                 </div>
 
                 {s.description && (
-                  <p className={`mb-4 ${type.cardDesc} line-clamp-2`}>{s.description}</p>
+                  <p className={`${type.body} text-gray-600 line-clamp-3 leading-relaxed`}>{s.description}</p>
                 )}
 
                 {s.services && s.services.length > 0 && (

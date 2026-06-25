@@ -11,7 +11,7 @@ export function PageHeader({ title, subtitle, className = "" }: Props) {
     <div className={`mb-10 ${className}`}>
       <h1 className={type.h2}>{title}</h1>
       {subtitle && (
-        <p className={`mt-4 ${type.subtitle} text-gray-500`}>{subtitle}</p>
+        <p className={`mt-4 ${type.bodyLg} text-gray-600`}>{subtitle}</p>
       )}
     </div>
   )

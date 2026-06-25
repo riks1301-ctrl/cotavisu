@@ -89,20 +89,20 @@ export default function PedidosPage() {
       </div>
 
       {/* Busca e filtro */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-10 space-y-5">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
           <Input
-            className="pl-9"
+            className="pl-12"
             placeholder="Buscar por serviço, categoria ou cidade..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-3 flex-wrap">
           <button
             onClick={() => setActiveCategory(null)}
-            className={`rounded-full border px-4 py-2 ${type.caption} font-medium transition-all ${
+            className={`rounded-full border px-5 py-2.5 ${type.label} font-medium transition-all ${
               !activeCategory ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300"
             }`}
           >
@@ -112,7 +112,7 @@ export default function PedidosPage() {
             <button
               key={cat}
               onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-              className={`rounded-full border px-4 py-2 ${type.caption} font-medium transition-all ${
+              className={`rounded-full border px-5 py-2.5 ${type.label} font-medium transition-all ${
                 activeCategory === cat ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300"
               }`}
             >
@@ -135,54 +135,56 @@ export default function PedidosPage() {
           <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-2 2xl:grid-cols-3">
           {filtered.map((req) => {
             const isSameState = userState && req.state === userState
             const expiresIn = Math.ceil((new Date(req.expires_at).getTime() - Date.now()) / 86400000)
             const isUrgent = expiresIn <= 2
 
             return (
-              <Card key={req.id} className={`hover:shadow-lg transition-shadow ${isSameState ? "border-blue-200" : ""}`}>
-                <CardContent>
-                  <div className="mb-4 flex items-center justify-between">
+              <Card key={req.id} className={`hover:shadow-xl transition-all ${isSameState ? "border-blue-200 ring-blue-100" : ""}`}>
+                <CardContent className="flex flex-col gap-5">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant="secondary">{req.category}</Badge>
                       {isSameState && (
                         <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-                          <Star className="mr-1 h-3 w-3" /> Sua região
+                          <Star className="mr-1 h-4 w-4" /> Sua região
                         </Badge>
                       )}
                     </div>
-                    <span className={`${type.caption} ${isUrgent ? "text-red-500 font-medium" : ""}`}>
+                    <span className={`shrink-0 ${type.label} ${isUrgent ? "text-red-600 font-semibold" : "text-gray-500"}`}>
                       {isUrgent ? `⚠ ${expiresIn}d restante${expiresIn !== 1 ? "s" : ""}` : `${expiresIn}d`}
                     </span>
                   </div>
 
-                  <h3 className={`mb-2 ${type.cardTitle}`}>{req.service_type}</h3>
-                  {req.material && <p className={`mb-2 ${type.caption}`}>{req.material}</p>}
+                  <div>
+                    <h3 className={type.cardTitle}>{req.service_type}</h3>
+                    {req.material && <p className={`mt-2 ${type.cardDesc}`}>{req.material}</p>}
+                  </div>
 
-                  <div className={`mb-5 mt-2 grid grid-cols-2 gap-3 ${type.caption}`}>
+                  <div className={`grid grid-cols-1 gap-2.5 ${type.body} text-gray-700 sm:grid-cols-2`}>
                     {req.width_m && req.height_m && (
-                      <div className="flex items-center gap-1.5">
-                        <Package className="h-4 w-4" />
+                      <div className="flex items-center gap-2">
+                        <Package className="h-5 w-5 shrink-0 text-gray-400" />
                         {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)}cm · {req.quantity}un
                       </div>
                     )}
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 shrink-0 text-gray-400" />
                       {req.city}/{req.state}
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="h-4 w-4" />
+                    <div className="flex items-center gap-2 sm:col-span-2">
+                      <Clock className="h-5 w-5 shrink-0 text-gray-400" />
                       Prazo: {req.deadline_days} dias
                     </div>
                   </div>
 
                   {req.description && (
-                    <p className={`mb-5 ${type.cardDesc} line-clamp-2`}>{req.description}</p>
+                    <p className={`${type.body} text-gray-600 line-clamp-3 leading-relaxed`}>{req.description}</p>
                   )}
 
-                  <div className="flex gap-3">
+                  <div className="mt-auto flex gap-3 pt-2">
                     <ButtonLink href={`/pedidos/${req.id}`} className="flex-1" variant="outline">
                       Ver detalhes
                     </ButtonLink>

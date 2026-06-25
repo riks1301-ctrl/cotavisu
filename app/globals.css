@@ -56,7 +56,7 @@
   --text-card-desc: 1.0625rem;
   --text-body: 1.125rem;
   --text-label: 1rem;
-  --text-caption: 0.9375rem;
+  --text-caption: 1rem;
   --text-nav: 1.125rem;
   --text-button: 1.125rem;
 
@@ -210,11 +210,17 @@
     font-weight: 600;
     line-height: 1.35;
   }
+  @media (min-width: 1024px) {
+    .type-card-title { font-size: 1.5rem; }
+  }
 
   .type-card-desc {
     font-size: 1.0625rem;
     line-height: 1.6;
-    color: var(--muted-foreground);
+    color: oklch(0.42 0 0);
+  }
+  @media (min-width: 1024px) {
+    .type-card-desc { font-size: 1.125rem; }
   }
 
   .type-body {
@@ -232,11 +238,17 @@
     font-weight: 500;
     line-height: 1.4;
   }
+  @media (min-width: 1024px) {
+    .type-label { font-size: 1.0625rem; }
+  }
 
   .type-caption {
-    font-size: 0.9375rem;
+    font-size: 1rem;
     line-height: 1.5;
-    color: var(--muted-foreground);
+    color: oklch(0.45 0 0);
+  }
+  @media (min-width: 1024px) {
+    .type-caption { font-size: 1.0625rem; }
   }
 
   .type-nav {
