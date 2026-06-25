@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { buttonVariants } from "@/components/ui/button"
 import { Edit, LayoutDashboard, Loader2, Package, Plus, Settings, ShoppingBag, ToggleLeft, ToggleRight, Trash2, Users } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { PageHeader } from "@/components/layout/page-header"
+import { layout, type } from "@/lib/typography"
 
 type Service = { id: string; name: string; base_price: number; avg_days: number; unit: string; is_active: boolean; service_categories: { name: string } | null }
 type Product = { id: string; name: string; avg_price: number; unit: string; is_active: boolean; supplier_name: string | null; service_categories: { name: string } | null }
@@ -19,10 +21,10 @@ type Stats = { totalRequests: number; totalProposals: number; totalSuppliers: nu
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
     <Card>
-      <CardContent className="p-5">
-        <p className="text-sm text-gray-500">{label}</p>
-        <p className="text-2xl font-bold">{value}</p>
-        {sub && <p className="text-xs text-green-600">{sub}</p>}
+      <CardContent>
+        <p className={`${type.caption} mb-1`}>{label}</p>
+        <p className={type.h2}>{value}</p>
+        {sub && <p className={`mt-1 ${type.caption} text-green-600`}>{sub}</p>}
       </CardContent>
     </Card>
   )
@@ -115,12 +117,13 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Painel Admin</h1>
-          <p className="text-sm text-gray-500">Gerenciar plataforma e modo prateleira</p>
-        </div>
+    <div className={`${layout.container} py-10`}>
+      <div className="mb-10 flex items-center justify-between">
+        <PageHeader
+          className="mb-0"
+          title="Painel Admin"
+          subtitle="Gerenciar plataforma e modo prateleira"
+        />
         <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
           <Settings className="mr-1 h-3 w-3" /> Administrador
         </Badge>
@@ -142,9 +145,9 @@ export default function AdminPage() {
             <StatCard label="Serviços padrão ativos" value={services.filter((s) => s.is_active).length} />
             <StatCard label="Produtos de prateleira" value={products.filter((p) => p.is_active).length} />
           </div>
-          <div className="mt-8 rounded-xl border bg-blue-50 p-5">
-            <h2 className="mb-1 font-semibold text-blue-800">Modo Prateleira</h2>
-            <p className="text-sm text-blue-700">
+          <div className="mt-10 rounded-xl border bg-blue-50 p-6">
+            <h2 className={`mb-2 ${type.cardTitle} text-blue-800`}>Modo Prateleira</h2>
+            <p className={`${type.body} text-blue-700`}>
               {services.filter((s) => s.is_active).length} serviços e {products.filter((p) => p.is_active).length} produtos ativos.
               Exibidos automaticamente quando um pedido não tem propostas reais.
             </p>
@@ -155,8 +158,8 @@ export default function AdminPage() {
         <TabsContent value="services">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="font-semibold">Serviços padrão</h2>
-              <p className="text-sm text-gray-500">Base de estimativas do modo prateleira</p>
+              <h2 className={type.h3}>Serviços padrão</h2>
+              <p className={type.caption}>Base de estimativas do modo prateleira</p>
             </div>
             <Dialog>
               <DialogTrigger className={buttonVariants({ size: "sm" })}>
@@ -177,8 +180,8 @@ export default function AdminPage() {
           </div>
 
           <div className="rounded-lg border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+            <table className={`w-full ${type.body}`}>
+              <thead className={`bg-gray-50 ${type.caption} uppercase`}>
                 <tr>
                   <th className="px-4 py-3 text-left">Serviço</th>
                   <th className="px-4 py-3 text-left hidden sm:table-cell">Categoria</th>
@@ -219,8 +222,8 @@ export default function AdminPage() {
         <TabsContent value="products">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="font-semibold">Produtos de prateleira</h2>
-              <p className="text-sm text-gray-500">Insumos com preço médio de referência</p>
+              <h2 className={type.h3}>Produtos de prateleira</h2>
+              <p className={type.caption}>Insumos com preço médio de referência</p>
             </div>
             <Dialog>
               <DialogTrigger className={buttonVariants({ size: "sm" })}>
@@ -242,8 +245,8 @@ export default function AdminPage() {
           </div>
 
           <div className="rounded-lg border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+            <table className={`w-full ${type.body}`}>
+              <thead className={`bg-gray-50 ${type.caption} uppercase`}>
                 <tr>
                   <th className="px-4 py-3 text-left">Produto</th>
                   <th className="px-4 py-3 text-right">Preço médio</th>

@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, Save } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
 import { isValidWhatsApp } from "@/lib/whatsapp"
+import { PageHeader } from "@/components/layout/page-header"
+import { layout, type } from "@/lib/typography"
 
 const SERVICE_OPTIONS = [
   "Adesivos", "Banners e Lonas", "Fachadas e ACM", "PDV",
@@ -157,19 +159,19 @@ export default function PerfilPage() {
   }
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-8 sm:px-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Meu perfil</h1>
-        <p className="text-sm text-gray-500">
-          {role === "supplier"
+    <div className={`${layout.containerNarrow} py-10`}>
+      <PageHeader
+        title="Meu perfil"
+        subtitle={
+          role === "supplier"
             ? "Dados visíveis nas propostas. WhatsApp é compartilhado só após o comprador escolher sua proposta."
-            : "Seus dados de contato para quando você escolher uma proposta."}
-        </p>
-      </div>
+            : "Seus dados de contato para quando você escolher uma proposta."
+        }
+      />
 
       <Card>
-        <CardContent className="p-6">
-          <form onSubmit={handleSave} className="space-y-4">
+        <CardContent>
+          <form onSubmit={handleSave} className="space-y-6">
             <Badge variant="secondary">
               {role === "supplier" ? "Fornecedor" : role === "admin" ? "Admin" : "Comprador"}
             </Badge>
@@ -256,8 +258,8 @@ export default function PerfilPage() {
               </div>
             )}
 
-            {error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>}
-            {success && <p className="rounded-lg bg-green-50 p-3 text-sm text-green-700">Perfil salvo!</p>}
+            {error && <p className={`rounded-xl bg-red-50 p-4 ${type.body} text-red-600`}>{error}</p>}
+            {success && <p className={`rounded-xl bg-green-50 p-4 ${type.body} text-green-700`}>Perfil salvo!</p>}
 
             <Button type="submit" className="w-full" disabled={saving}>
               {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Salvando...</> : <><Save className="mr-2 h-4 w-4" /> Salvar</>}

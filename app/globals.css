@@ -46,6 +46,28 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Tipografia — escala premium */
+  --text-hero: 2.5rem;
+  --text-h2: 1.75rem;
+  --text-h3: 1.375rem;
+  --text-subtitle: 1.375rem;
+  --text-card-title: 1.375rem;
+  --text-card-desc: 1.0625rem;
+  --text-body: 1.125rem;
+  --text-label: 1rem;
+  --text-caption: 0.9375rem;
+  --text-nav: 1.125rem;
+  --text-button: 1.125rem;
+
+  --leading-hero: 1.05;
+  --leading-body: 1.7;
+  --leading-subtitle: 1.5;
+
+  --spacing-section: 5rem;
+  --spacing-card: 1.75rem;
+  --spacing-title: 1.5rem;
+  --spacing-block: 3rem;
 }
 
 :root {
@@ -123,8 +145,148 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
   }
   html {
-    @apply font-sans;
+    @apply font-sans antialiased;
+  }
+  h1 {
+    @apply font-bold tracking-tight;
+  }
+  h2, h3 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+/* ─── Design System: Tipografia ─── */
+@layer utilities {
+  .type-hero {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  @media (min-width: 768px) {
+    .type-hero { font-size: 3.25rem; }
+  }
+  @media (min-width: 1024px) {
+    .type-hero { font-size: 4rem; }
+  }
+
+  .type-h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  @media (min-width: 768px) {
+    .type-h2 { font-size: 2rem; }
+  }
+  @media (min-width: 1024px) {
+    .type-h2 { font-size: 2.5rem; }
+  }
+
+  .type-h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  @media (min-width: 1024px) {
+    .type-h3 { font-size: 1.375rem; }
+  }
+
+  .type-subtitle {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  @media (min-width: 768px) {
+    .type-subtitle { font-size: 1.375rem; }
+  }
+
+  .type-card-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .type-card-desc {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  .type-body {
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  .type-body-lg {
+    font-size: 1.1875rem;
+    line-height: 1.65;
+  }
+
+  .type-label {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .type-caption {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  .type-nav {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .type-button {
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  /* ─── Layout ─── */
+  .app-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1400px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .app-container { padding-left: 2rem; padding-right: 2rem; }
+  }
+  @media (min-width: 1024px) {
+    .app-container { padding-left: 2.5rem; padding-right: 2.5rem; }
+  }
+
+  .app-container-narrow {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 720px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .section-y {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  .stack-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .title-gap {
+    margin-bottom: 1.5rem;
   }
 }

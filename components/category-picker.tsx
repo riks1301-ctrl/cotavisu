@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Check } from "lucide-react"
 import { serviceCategories } from "@/lib/service-options"
 import { getCategoryVisual } from "@/lib/category-visuals"
+import { type } from "@/lib/typography"
 
 type Props = {
   selected: string
@@ -47,13 +48,13 @@ export function CategoryPicker({ selected, onSelect }: Props) {
               } via-black/25 to-transparent`}
             />
 
-            <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-4">
-              <span className="text-2xl mb-1 drop-shadow">{cat.icon}</span>
-              <p className="font-bold text-white text-sm sm:text-base leading-tight drop-shadow">
+            <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
+              <span className="text-3xl mb-2 drop-shadow">{cat.icon}</span>
+              <p className={`font-bold text-white ${type.cardTitle} leading-tight drop-shadow`}>
                 {cat.name}
               </p>
               {visual?.description && (
-                <p className="mt-0.5 text-xs text-white/85 drop-shadow hidden sm:block">
+                <p className={`mt-1 ${type.caption} text-white/90 drop-shadow hidden sm:block`}>
                   {visual.description}
                 </p>
               )}

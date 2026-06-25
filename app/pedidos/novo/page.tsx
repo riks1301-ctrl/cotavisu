@@ -18,6 +18,7 @@ import { PDVBuilder, type PDVItemSelected } from "@/components/pdv-builder"
 import { CategoryPicker } from "@/components/category-picker"
 import { CategoryQuickPick } from "@/components/category-quick-pick"
 import { PedidoResumoSidebar } from "@/components/pedido-resumo-sidebar"
+import { layout, type } from "@/lib/typography"
 
 const MACRO_STEPS = ["Descrever", "Detalhar", "Publicar"]
 
@@ -299,12 +300,12 @@ export default function NovoPedidoPage() {
 
   if (showPDV) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Kit PDV</h1>
-          <p className="mt-1 text-gray-500">Monte os materiais de ponto de venda</p>
+      <div className={`${layout.container} py-10`}>
+        <div className="mb-10">
+          <h1 className={type.h2}>Kit PDV</h1>
+          <p className={`mt-3 ${type.subtitle} text-gray-500`}>Monte os materiais de ponto de venda</p>
         </div>
-        <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
+        <div className="grid gap-10 lg:grid-cols-[1fr_320px]">
           <Card>
             <CardContent className="p-6 sm:p-8">
               <PDVBuilder
@@ -320,27 +321,27 @@ export default function NovoPedidoPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className={`${layout.container} py-10`}>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+      <div className="mb-10">
+        <h1 className={type.h2}>
           Criar pedido de orçamento
         </h1>
-        <p className="mt-2 text-gray-500">
+        <p className={`mt-3 ${type.subtitle} text-gray-500`}>
           Descreva o projeto e receba propostas de gráficas da sua região
         </p>
-        <div className="mt-3">
+        <div className="mt-4">
           <UrgencyInline />
         </div>
       </div>
 
       {/* Macro stepper */}
-      <div className="mb-8 flex items-center gap-2 sm:gap-4">
+      <div className="mb-10 flex items-center gap-3 sm:gap-5">
         {MACRO_STEPS.map((label, i) => (
           <div key={label} className="flex flex-1 items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2 min-w-0">
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${type.label} font-semibold ${
                   macro > i
                     ? "bg-green-500 text-white"
                     : macro === i
@@ -351,7 +352,7 @@ export default function NovoPedidoPage() {
                 {macro > i ? <CheckCircle className="h-4 w-4" /> : i + 1}
               </div>
               <span
-                className={`hidden text-sm font-medium sm:block truncate ${
+                className={`hidden font-medium sm:block truncate ${type.nav} ${
                   macro === i ? "text-gray-900" : macro > i ? "text-green-700" : "text-gray-400"
                 }`}
               >
@@ -365,7 +366,7 @@ export default function NovoPedidoPage() {
         ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
+      <div className="grid gap-10 lg:grid-cols-[1fr_320px]">
         {/* Main */}
         <Card className="overflow-hidden">
           <CardContent className="p-6 sm:p-8">
@@ -384,7 +385,7 @@ export default function NovoPedidoPage() {
                   <button
                     type="button"
                     onClick={() => setShowAI(true)}
-                    className="text-sm text-blue-600 hover:underline"
+                    className={`${type.nav} text-blue-600 hover:underline`}
                   >
                     ← Usar assistente com IA
                   </button>
@@ -392,7 +393,7 @@ export default function NovoPedidoPage() {
 
                 <div className={showAI ? "border-t pt-8" : ""}>
                   {showAI && (
-                    <p className="mb-4 text-sm text-gray-500">
+                    <p className={`mb-4 ${type.body} text-gray-500`}>
                       Ou escolha a categoria diretamente:
                     </p>
                   )}
@@ -404,7 +405,7 @@ export default function NovoPedidoPage() {
 
                 {!showAI && (
                   <div className="border-t pt-8">
-                    <p className="mb-4 text-sm text-gray-500">
+                    <p className={`mb-4 ${type.body} text-gray-500`}>
                       Prefere ver com fotos? Escolha abaixo:
                     </p>
                     <CategoryPicker
@@ -422,8 +423,8 @@ export default function NovoPedidoPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{category.icon}</span>
                   <div>
-                    <p className="text-sm text-gray-500">{category.name}</p>
-                    <h2 className="text-xl font-semibold">Qual serviço especificamente?</h2>
+                    <p className={`${type.caption} text-gray-500`}>{category.name}</p>
+                    <h2 className={type.h3}>Qual serviço especificamente?</h2>
                   </div>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -439,7 +440,7 @@ export default function NovoPedidoPage() {
                       }`}
                     >
                       <span className="text-2xl">{svc.icon}</span>
-                      <span className="font-medium">{svc.name}</span>
+                      <span className={`${type.cardTitle} font-medium`}>{svc.name}</span>
                       {selectedService?.name === svc.name && (
                         <CheckCircle className="ml-auto h-5 w-5 text-blue-600" />
                       )}
@@ -454,7 +455,7 @@ export default function NovoPedidoPage() {
               <div className="space-y-6">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant="secondary">{selectedCategory}</Badge>
-                  <h2 className="text-xl font-semibold">{selectedService.name}</h2>
+                  <h2 className={type.h3}>{selectedService.name}</h2>
                 </div>
                 {selectedService.attributes.map((attr) => (
                   <div key={attr.key}>
@@ -468,7 +469,7 @@ export default function NovoPedidoPage() {
                           key={opt.id}
                           type="button"
                           onClick={() => setAttr(attr.key, opt.id)}
-                          className={`rounded-xl border px-4 py-3 text-left text-sm transition-all ${
+                          className={`rounded-xl border px-4 py-3.5 text-left ${type.body} transition-all ${
                             attributes[attr.key] === opt.id
                               ? "border-blue-600 bg-blue-50 font-medium text-blue-800"
                               : "hover:border-gray-300 hover:bg-gray-50"
@@ -488,12 +489,12 @@ export default function NovoPedidoPage() {
               <div className="space-y-6">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant="secondary">{selectedCategory}</Badge>
-                  <h2 className="text-xl font-semibold">{selectedService.name}</h2>
+                  <h2 className={type.h3}>{selectedService.name}</h2>
                 </div>
 
                 {selectedService.unit !== "unit" ? (
                   <>
-                    <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-800">
+                    <div className={`rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 ${type.body} text-blue-800`}>
                       Informe as medidas em <strong>centímetros (cm)</strong>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -508,7 +509,7 @@ export default function NovoPedidoPage() {
                             onChange={(e) => setWidthCm(e.target.value)}
                             className="pr-10 h-11"
                           />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                          <span className={`absolute right-3 top-1/2 -translate-y-1/2 ${type.caption}`}>cm</span>
                         </div>
                       </div>
                       <div>
@@ -522,12 +523,12 @@ export default function NovoPedidoPage() {
                             onChange={(e) => setHeightCm(e.target.value)}
                             className="pr-10 h-11"
                           />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                          <span className={`absolute right-3 top-1/2 -translate-y-1/2 ${type.caption}`}>cm</span>
                         </div>
                       </div>
                     </div>
                     {widthCm && heightCm && (
-                      <p className="text-sm text-gray-500">
+                      <p className={`${type.body} text-gray-500`}>
                         Área por unidade:{" "}
                         <strong>
                           {(parseFloat(widthCm) * parseFloat(heightCm) / 10000).toFixed(4)} m²
@@ -536,7 +537,7 @@ export default function NovoPedidoPage() {
                     )}
                   </>
                 ) : (
-                  <p className="rounded-xl bg-gray-50 border px-4 py-3 text-sm text-gray-600">
+                  <p className={`rounded-xl bg-gray-50 border px-4 py-3 ${type.body} text-gray-600`}>
                     Este serviço é cobrado por unidade/peça.
                   </p>
                 )}
@@ -574,7 +575,7 @@ export default function NovoPedidoPage() {
             {/* Step 4 — Entrega */}
             {step === 4 && (
               <div className="space-y-5">
-                <h2 className="text-xl font-semibold">Onde e quando você precisa?</h2>
+                <h2 className={type.h3}>Onde e quando você precisa?</h2>
 
                 <div>
                   <Label htmlFor="buyerName">Nome ou empresa (opcional)</Label>
@@ -619,7 +620,7 @@ export default function NovoPedidoPage() {
                         key={d}
                         type="button"
                         onClick={() => setDeadlineDays(d)}
-                        className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
+                        className={`rounded-xl border px-5 py-2.5 ${type.nav} font-medium transition-all ${
                           deadlineDays === d
                             ? "border-blue-600 bg-blue-50 text-blue-800"
                             : "hover:border-gray-300"
@@ -643,7 +644,7 @@ export default function NovoPedidoPage() {
                   />
                 </div>
 
-                <p className="text-xs text-gray-400">
+                <p className={type.caption}>
                   Pedido aberto por 7 dias · Gratuito · Login necessário para publicar
                 </p>
               </div>

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { layout, type } from "@/lib/typography"
 
 type CategoryCard = {
   name: string
@@ -62,32 +63,29 @@ const categories: CategoryCard[] = [
 
 export function CategoryCards() {
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8 bg-white">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-end justify-between">
+    <section className="section-y bg-white">
+      <div className={layout.container}>
+        <div className="mb-12 flex items-end justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              O que você precisa fazer?
-            </h2>
-            <p className="mt-1 text-gray-500">
+            <h2 className={type.h2}>O que você precisa fazer?</h2>
+            <p className={`mt-4 ${type.subtitle} text-gray-500`}>
               Clique na categoria e receba orçamentos de fornecedores na sua região
             </p>
           </div>
           <Link
             href="/pedidos/novo"
-            className="hidden text-sm font-medium text-blue-600 hover:underline sm:block"
+            className={`hidden ${type.nav} text-blue-600 hover:underline sm:block`}
           >
             Ver todos →
           </Link>
         </div>
 
-        {/* Grid de cards com imagem */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {categories.map((cat) => (
             <Link
               key={cat.slug}
               href={`/pedidos/novo?categoria=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="group relative overflow-hidden rounded-2xl shadow-md transition-all hover:shadow-xl hover:-translate-y-1"
               style={{ aspectRatio: "4/3" }}
             >
               {/* Imagem de fundo */}
@@ -103,18 +101,18 @@ export function CategoryCards() {
               <div className={`absolute inset-0 bg-gradient-to-t ${cat.color} to-black/10`} />
 
               {/* Conteúdo */}
-              <div className="absolute inset-0 flex flex-col justify-end p-3">
-                <p className="font-bold text-white leading-tight text-sm sm:text-base drop-shadow">
+              <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
+                <p className={`${type.cardTitle} text-white drop-shadow leading-tight`}>
                   {cat.name}
                 </p>
-                <p className="mt-0.5 text-xs text-white/80 drop-shadow hidden sm:block">
+                <p className={`mt-1 ${type.cardDesc} text-white/90 drop-shadow hidden sm:block`}>
                   {cat.description}
                 </p>
               </div>
 
               {/* Badge "Pedir orçamento" no hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                <span className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-gray-900 shadow-lg">
+                <span className={`rounded-full bg-white px-5 py-2 ${type.caption} font-bold text-gray-900 shadow-lg`}>
                   Pedir orçamento →
                 </span>
               </div>
@@ -128,14 +126,14 @@ export function CategoryCards() {
             style={{ aspectRatio: "4/3" }}
           >
             <span className="text-3xl mb-2">➕</span>
-            <p className="font-bold text-blue-700 text-sm">Outro serviço</p>
-            <p className="mt-0.5 text-xs text-blue-500">Criar pedido personalizado</p>
+            <p className={`font-bold text-blue-700 ${type.nav}`}>Outro serviço</p>
+            <p className={`mt-1 ${type.caption} text-blue-500`}>Criar pedido personalizado</p>
           </Link>
         </div>
 
         {/* CTA mobile */}
         <div className="mt-4 text-center sm:hidden">
-          <Link href="/pedidos/novo" className="text-sm font-medium text-blue-600 hover:underline">
+          <Link href="/pedidos/novo" className={`${type.nav} font-medium text-blue-600 hover:underline`}>
             Ver todos os serviços →
           </Link>
         </div>

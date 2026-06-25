@@ -1,101 +1,97 @@
 import { BadgeCheck, Clock, Shield, Star, ThumbsUp, Users } from "lucide-react"
+import { layout, type } from "@/lib/typography"
 
 export function TrustSection() {
   return (
-    <section className="border-t bg-white px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-
-        {/* Headline */}
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Por que confiar no CotaVisu?</h2>
-          <p className="mt-2 text-gray-500">Cada pedido é protegido. Comparamos — você decide com quem fechar.</p>
+    <section className="border-t bg-white section-y">
+      <div className={layout.container}>
+        <div className="mb-12 text-center">
+          <h2 className={type.h2}>Por que confiar no CotaVisu?</h2>
+          <p className={`mt-4 ${type.subtitle} text-gray-500`}>
+            Cada pedido é protegido. Comparamos — você decide com quem fechar.
+          </p>
         </div>
 
-        {/* 3 pilares */}
-        <div className="grid gap-6 sm:grid-cols-3">
-
-          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600">
-              <BadgeCheck className="h-7 w-7 text-white" />
+        <div className="grid gap-8 sm:grid-cols-3">
+          {[
+            {
+              border: "border-blue-100 bg-blue-50",
+              iconBg: "bg-blue-600",
+              icon: <BadgeCheck className="h-8 w-8 text-white" />,
+              title: "Perfis completos",
+              desc: "Cada fornecedor cadastra seus serviços, região de atendimento e recebe avaliações reais de clientes que já fecharam negócio.",
+              badge: "Avaliações reais",
+              badgeClass: "bg-blue-100 text-blue-700",
+              badgeIcon: <BadgeCheck className="h-4 w-4" />,
+            },
+            {
+              border: "border-yellow-100 bg-yellow-50",
+              iconBg: "bg-yellow-500",
+              icon: <Star className="h-8 w-8 text-white" />,
+              title: "Avaliações reais",
+              desc: "Só quem realmente fechou negócio pode avaliar. Sem estrelas compradas, sem reviews falsos — apenas experiências reais.",
+              badge: "100% reais",
+              badgeClass: "bg-yellow-100 text-yellow-700",
+              badgeIcon: <ThumbsUp className="h-4 w-4" />,
+            },
+            {
+              border: "border-green-100 bg-green-50",
+              iconBg: "bg-green-600",
+              icon: <Shield className="h-8 w-8 text-white" />,
+              title: "Seus dados protegidos",
+              desc: "Seus dados nunca são compartilhados sem sua permissão. Plataforma em conformidade com a LGPD.",
+              badge: "LGPD",
+              badgeClass: "bg-green-100 text-green-700",
+              badgeIcon: <Shield className="h-4 w-4" />,
+            },
+          ].map((item) => (
+            <div key={item.title} className={`rounded-2xl border p-8 text-center ${item.border}`}>
+              <div className={`mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full ${item.iconBg}`}>
+                {item.icon}
+              </div>
+              <h3 className={`mb-3 ${type.cardTitle}`}>{item.title}</h3>
+              <p className={type.cardDesc}>{item.desc}</p>
+              <div className={`mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 ${type.caption} font-medium ${item.badgeClass}`}>
+                {item.badgeIcon} {item.badge}
+              </div>
             </div>
-            <h3 className="mb-2 font-bold text-gray-900">Perfis completos</h3>
-            <p className="text-sm text-gray-600">
-              Cada fornecedor cadastra seus serviços, região de atendimento e recebe
-              avaliações reais de clientes que já fecharam negócio.
-            </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-              <BadgeCheck className="h-3 w-3" /> Avaliações reais
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-yellow-100 bg-yellow-50 p-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-yellow-500">
-              <Star className="h-7 w-7 text-white" />
-            </div>
-            <h3 className="mb-2 font-bold text-gray-900">Avaliações reais</h3>
-            <p className="text-sm text-gray-600">
-              Só quem realmente fechou negócio pode avaliar. Sem estrelas compradas,
-              sem reviews falsos — apenas experiências reais.
-            </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">
-              <ThumbsUp className="h-3 w-3" /> 100% reais
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-green-100 bg-green-50 p-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-600">
-              <Shield className="h-7 w-7 text-white" />
-            </div>
-            <h3 className="mb-2 font-bold text-gray-900">Seus dados protegidos</h3>
-            <p className="text-sm text-gray-600">
-              Seus dados nunca são compartilhados sem sua permissão.
-              Plataforma em conformidade com a LGPD.
-            </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-              <Shield className="h-3 w-3" /> LGPD
-            </div>
-          </div>
-
+          ))}
         </div>
 
-        {/* Barra de stats de confiança */}
-        <div className="mt-10 rounded-2xl border bg-gray-50 p-6">
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <div className="mt-12 rounded-2xl border bg-gray-50 p-8">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {[
-              { icon: <Users className="h-5 w-5 text-blue-600" />, value: "100%", label: "Gratuito para compradores" },
-              { icon: <BadgeCheck className="h-5 w-5 text-green-600" />, value: "Real", label: "Propostas de gráficas" },
-              { icon: <Star className="h-5 w-5 text-yellow-500" />, value: "Compare", label: "Preço e prazo" },
-              { icon: <Clock className="h-5 w-5 text-purple-600" />, value: "WhatsApp", label: "Após escolher" },
+              { icon: <Users className="h-6 w-6 text-blue-600" />, value: "100%", label: "Gratuito para compradores" },
+              { icon: <BadgeCheck className="h-6 w-6 text-green-600" />, value: "Real", label: "Propostas de gráficas" },
+              { icon: <Star className="h-6 w-6 text-yellow-500" />, value: "Compare", label: "Preço e prazo" },
+              { icon: <Clock className="h-6 w-6 text-purple-600" />, value: "WhatsApp", label: "Após escolher" },
             ].map((item) => (
               <div key={item.label} className="text-center">
-                <div className="mb-1 flex justify-center">{item.icon}</div>
-                <p className="text-lg font-bold text-gray-900">{item.value}</p>
-                <p className="text-xs text-gray-500">{item.label}</p>
+                <div className="mb-2 flex justify-center">{item.icon}</div>
+                <p className={`${type.cardTitle} text-gray-900`}>{item.value}</p>
+                <p className={type.caption}>{item.label}</p>
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </section>
   )
 }
 
-// Badge inline para usar nos cards de fornecedor/proposta
 export function VerifiedBadge({ size = "sm" }: { size?: "sm" | "md" }) {
   if (size === "md") return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
-      <BadgeCheck className="h-3.5 w-3.5" /> Verificado
+    <span className={`inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 ${type.caption} font-semibold text-blue-700`}>
+      <BadgeCheck className="h-4 w-4" /> Verificado
     </span>
   )
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
-      <BadgeCheck className="h-3 w-3" /> Verificado
+    <span className={`inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 ${type.caption} font-medium text-blue-600`}>
+      <BadgeCheck className="h-3.5 w-3.5" /> Verificado
     </span>
   )
 }
 
-// Stars component reutilizável
 export function StarRating({
   rating,
   reviews,
@@ -107,20 +103,12 @@ export function StarRating({
   showCount?: boolean
   size?: "sm" | "md" | "lg"
 }) {
-  const sizeMap = {
-    sm: "h-3.5 w-3.5",
-    md: "h-4 w-4",
-    lg: "h-5 w-5",
-  }
-  const textMap = {
-    sm: "text-xs",
-    md: "text-sm",
-    lg: "text-base",
-  }
+  const sizeMap = { sm: "h-4 w-4", md: "h-5 w-5", lg: "h-6 w-6" }
+  const textMap = { sm: type.caption, md: type.body, lg: type.nav }
 
   if (reviews === 0) {
     return (
-      <span className={`inline-flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 ${textMap[size]} text-gray-500`}>
+      <span className={`inline-flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 ${textMap[size]} text-gray-500`}>
         Novo fornecedor
       </span>
     )
@@ -135,9 +123,7 @@ export function StarRating({
         />
       ))}
       <span className="font-semibold text-gray-800">{rating.toFixed(1)}</span>
-      {showCount && (
-        <span className="text-gray-400">({reviews})</span>
-      )}
+      {showCount && <span className="text-gray-400">({reviews})</span>}
     </span>
   )
 }

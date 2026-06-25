@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Building2, Loader2, ShoppingCart } from "lucide-react"
 import { signUp } from "@/lib/auth"
 import { isValidWhatsApp } from "@/lib/whatsapp"
+import { layout, type } from "@/lib/typography"
 
 export default function CadastroPage() {
   const router = useRouter()
@@ -52,8 +53,8 @@ export default function CadastroPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
             <span className="text-3xl">✓</span>
           </div>
-          <h2 className="mb-2 text-xl font-bold">Conta criada!</h2>
-          <p className="mb-6 text-sm text-gray-500">
+          <h2 className={`mb-3 ${type.h2}`}>Conta criada!</h2>
+          <p className={`mb-8 ${type.body} text-gray-500`}>
             Verifique seu e-mail para confirmar o cadastro, depois faça login.
           </p>
           <Button className="w-full" onClick={() => router.push("/login")}>
@@ -65,11 +66,11 @@ export default function CadastroPage() {
   }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold">Criar conta grátis</h1>
-          <p className="mt-1 text-sm text-gray-500">
+    <div className="flex min-h-[80vh] items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="mb-10 text-center">
+          <h1 className={type.h2}>Criar conta grátis</h1>
+          <p className={`mt-3 ${type.body} text-gray-500`}>
             Já tem conta?{" "}
             <Link href="/login" className="text-blue-600 hover:underline">Entrar</Link>
           </p>
@@ -77,28 +78,28 @@ export default function CadastroPage() {
 
         <Card>
           <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Tipo de conta */}
               <div>
-                <Label className="mb-2 block">Tipo de conta</Label>
-                <div className="grid grid-cols-2 gap-2">
+                <Label className="mb-3 block">Tipo de conta</Label>
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setRole("buyer")}
-                    className={`flex flex-col items-center gap-1 rounded-lg border p-3 text-sm transition-all ${role === "buyer" ? "border-blue-500 bg-blue-50 text-blue-700" : "hover:border-gray-300"}`}
+                    className={`flex flex-col items-center gap-2 rounded-xl border p-4 ${type.nav} transition-all ${role === "buyer" ? "border-blue-500 bg-blue-50 text-blue-700" : "hover:border-gray-300"}`}
                   >
-                    <ShoppingCart className="h-5 w-5" />
+                    <ShoppingCart className="h-6 w-6" />
                     <span className="font-medium">Comprador</span>
-                    <span className="text-xs text-gray-400">Crio pedidos</span>
+                    <span className={type.caption}>Crio pedidos</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setRole("supplier")}
-                    className={`flex flex-col items-center gap-1 rounded-lg border p-3 text-sm transition-all ${role === "supplier" ? "border-blue-500 bg-blue-50 text-blue-700" : "hover:border-gray-300"}`}
+                    className={`flex flex-col items-center gap-2 rounded-xl border p-4 ${type.nav} transition-all ${role === "supplier" ? "border-blue-500 bg-blue-50 text-blue-700" : "hover:border-gray-300"}`}
                   >
-                    <Building2 className="h-5 w-5" />
+                    <Building2 className="h-6 w-6" />
                     <span className="font-medium">Fornecedor</span>
-                    <span className="text-xs text-gray-400">Envio propostas</span>
+                    <span className={type.caption}>Envio propostas</span>
                   </button>
                 </div>
               </div>
@@ -148,13 +149,13 @@ export default function CadastroPage() {
                     onChange={(e) => setWhatsapp(e.target.value)}
                     required
                   />
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className={`mt-2 ${type.caption}`}>
                     Compartilhado com o comprador apenas se ele escolher sua proposta.
                   </p>
                 </div>
               )}
 
-              <label className="flex items-start gap-2 text-sm text-gray-600">
+              <label className={`flex items-start gap-3 ${type.body} text-gray-600`}>
                 <input
                   type="checkbox"
                   className="mt-1"
@@ -171,14 +172,14 @@ export default function CadastroPage() {
               </label>
 
               {error && (
-                <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>
+                <p className={`rounded-xl bg-red-50 p-4 ${type.body} text-red-600`}>{error}</p>
               )}
 
               <Button className="w-full" type="submit" disabled={loading || !acceptedTerms}>
                 {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Criando conta...</> : "Criar conta grátis"}
               </Button>
 
-              <p className="text-center text-xs text-gray-400">
+              <p className={`text-center ${type.caption}`}>
                 Conta gratuita. Publicar pedidos exige login.
               </p>
             </form>
@@ -186,12 +187,12 @@ export default function CadastroPage() {
         </Card>
 
         {role === "buyer" && (
-          <div className="mt-3 rounded-lg bg-green-50 p-3 text-center text-xs text-green-700">
+          <div className={`mt-4 rounded-xl bg-green-50 p-4 text-center ${type.caption} text-green-700`}>
             ✓ Gratuito para compradores. Sempre.
           </div>
         )}
         {role === "supplier" && (
-          <div className="mt-3 rounded-lg bg-blue-50 p-3 text-center text-xs text-blue-700">
+          <div className={`mt-4 rounded-xl bg-blue-50 p-4 text-center ${type.caption} text-blue-700`}>
             ✓ Grátis durante o período beta.
           </div>
         )}

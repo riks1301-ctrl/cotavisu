@@ -10,6 +10,8 @@ import { ButtonLink } from "@/components/ui/button-link"
 import { ArrowRight, Building2, Clock, Package, Plus, ShoppingCart } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
 import { signOut } from "@/lib/auth"
+import { PageHeader } from "@/components/layout/page-header"
+import { layout, type } from "@/lib/typography"
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -66,17 +68,14 @@ export default function DashboardPage() {
   const isSupplier = profile?.role === "supplier"
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className={`${layout.container} py-10`}>
       {/* Header */}
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">
-            Olá, {profile?.name?.split(" ")[0] ?? "usuário"} 👋
-          </h1>
-          <p className="text-gray-500">
-            {isSupplier ? "Confira os pedidos abertos na sua região" : "Gerencie seus pedidos de orçamento"}
-          </p>
-        </div>
+      <div className="mb-10 flex items-start justify-between gap-4">
+        <PageHeader
+          className="mb-0"
+          title={`Olá, ${profile?.name?.split(" ")[0] ?? "usuário"} 👋`}
+          subtitle={isSupplier ? "Confira os pedidos abertos na sua região" : "Gerencie seus pedidos de orçamento"}
+        />
         <div className="flex items-center gap-2">
           <Badge className={isSupplier ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}>
             {isSupplier ? <><Building2 className="mr-1 h-3 w-3" />Fornecedor</> : <><ShoppingCart className="mr-1 h-3 w-3" />Comprador</>}
@@ -86,29 +85,29 @@ export default function DashboardPage() {
       </div>
 
       {/* Ações rápidas */}
-      <div className="mb-8 grid gap-3 sm:grid-cols-3">
+      <div className="mb-10 grid gap-4 sm:grid-cols-3">
         {isSupplier ? (
           <>
-            <ButtonLink href="/pedidos" className="flex items-center justify-center gap-2 rounded-xl border bg-white p-4 text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
-              <Package className="h-5 w-5 text-blue-600" /> Ver pedidos abertos
+            <ButtonLink href="/pedidos" className={`flex items-center justify-center gap-2 rounded-xl border bg-white p-5 ${type.nav} font-medium shadow-sm hover:shadow-md transition-shadow`}>
+              <Package className="h-6 w-6 text-blue-600" /> Ver pedidos abertos
             </ButtonLink>
-            <ButtonLink href="/perfil" className="flex items-center justify-center gap-2 rounded-xl border bg-white p-4 text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
-              <Building2 className="h-5 w-5 text-purple-600" /> Meu perfil
+            <ButtonLink href="/perfil" className={`flex items-center justify-center gap-2 rounded-xl border bg-white p-5 ${type.nav} font-medium shadow-sm hover:shadow-md transition-shadow`}>
+              <Building2 className="h-6 w-6 text-purple-600" /> Meu perfil
             </ButtonLink>
-            <ButtonLink href="/pedidos" className="flex items-center justify-center gap-2 rounded-xl border bg-blue-600 p-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
-              <ArrowRight className="h-5 w-5" /> Enviar proposta
+            <ButtonLink href="/pedidos" className={`flex items-center justify-center gap-2 rounded-xl border bg-blue-600 p-5 ${type.nav} font-medium text-white shadow-sm hover:bg-blue-700 transition-colors`}>
+              <ArrowRight className="h-6 w-6" /> Enviar proposta
             </ButtonLink>
           </>
         ) : (
           <>
-            <ButtonLink href="/pedidos/novo" className="flex items-center justify-center gap-2 rounded-xl border bg-blue-600 p-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
-              <Plus className="h-5 w-5" /> Novo pedido
+            <ButtonLink href="/pedidos/novo" className={`flex items-center justify-center gap-2 rounded-xl border bg-blue-600 p-5 ${type.nav} font-medium text-white shadow-sm hover:bg-blue-700 transition-colors`}>
+              <Plus className="h-6 w-6" /> Novo pedido
             </ButtonLink>
-            <ButtonLink href="/meus-pedidos" className="flex items-center justify-center gap-2 rounded-xl border bg-white p-4 text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
-              <Package className="h-5 w-5 text-green-600" /> Meus pedidos
+            <ButtonLink href="/meus-pedidos" className={`flex items-center justify-center gap-2 rounded-xl border bg-white p-5 ${type.nav} font-medium shadow-sm hover:shadow-md transition-shadow`}>
+              <Package className="h-6 w-6 text-green-600" /> Meus pedidos
             </ButtonLink>
-            <ButtonLink href="/fornecedores" className="flex items-center justify-center gap-2 rounded-xl border bg-white p-4 text-sm font-medium shadow-sm hover:shadow-md transition-shadow">
-              <Building2 className="h-5 w-5 text-orange-600" /> Fornecedores
+            <ButtonLink href="/fornecedores" className={`flex items-center justify-center gap-2 rounded-xl border bg-white p-5 ${type.nav} font-medium shadow-sm hover:shadow-md transition-shadow`}>
+              <Building2 className="h-6 w-6 text-orange-600" /> Fornecedores
             </ButtonLink>
           </>
         )}
@@ -116,8 +115,8 @@ export default function DashboardPage() {
 
       {/* Lista de pedidos */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-semibold">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className={type.h3}>
             {isSupplier ? "Pedidos abertos para proposta" : "Seus pedidos recentes"}
           </h2>
           <ButtonLink href={isSupplier ? "/pedidos" : "/meus-pedidos"} variant="ghost" size="sm">
@@ -126,9 +125,9 @@ export default function DashboardPage() {
         </div>
 
         {requests.length === 0 ? (
-          <div className="rounded-xl border-2 border-dashed border-gray-200 py-12 text-center text-gray-400">
-            <Package className="mx-auto mb-2 h-10 w-10 opacity-30" />
-            <p>{isSupplier ? "Nenhum pedido aberto no momento." : "Você ainda não criou nenhum pedido."}</p>
+          <div className="rounded-xl border-2 border-dashed border-gray-200 py-16 text-center text-gray-400">
+            <Package className="mx-auto mb-3 h-12 w-12 opacity-30" />
+            <p className={type.body}>{isSupplier ? "Nenhum pedido aberto no momento." : "Você ainda não criou nenhum pedido."}</p>
             {!isSupplier && (
               <ButtonLink href="/pedidos/novo" className="mt-4">
                 <Plus className="mr-2 h-4 w-4" /> Criar primeiro pedido
@@ -136,22 +135,22 @@ export default function DashboardPage() {
             )}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {requests.map((req) => (
-              <Card key={req.id} className="hover:shadow-sm transition-shadow">
-                <CardContent className="flex items-center justify-between p-4">
+              <Card key={req.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="flex items-center justify-between p-5">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-sm">{req.service_type}</span>
-                      <Badge variant="secondary" className="text-xs">{req.category}</Badge>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`${type.nav} font-medium`}>{req.service_type}</span>
+                      <Badge variant="secondary">{req.category}</Badge>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-400">
+                    <div className={`flex items-center gap-4 ${type.caption}`}>
                       <span>{req.width_m}m × {req.height_m}m · {req.quantity}un</span>
-                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{req.deadline_days} dias</span>
+                      <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{req.deadline_days} dias</span>
                       <span>{req.city}/{req.state}</span>
                     </div>
                   </div>
-                  <ButtonLink href={`/pedidos/${req.id}`} size="sm" variant="outline">
+                  <ButtonLink href={`/pedidos/${req.id}`} variant="outline">
                     {isSupplier ? "Enviar proposta" : "Ver propostas"}
                   </ButtonLink>
                 </CardContent>

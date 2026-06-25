@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Clock, MapPin, Users } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
 import type { ServiceConfig } from "@/lib/service-options"
+import { type } from "@/lib/typography"
 
 type PriceEstimate = {
   total: number
@@ -64,25 +65,23 @@ export function PedidoResumoSidebar({
 
   return (
     <aside className="lg:sticky lg:top-24 lg:self-start">
-      <div className="rounded-2xl border bg-white shadow-sm">
-        <div className="border-b px-5 py-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+      <div className="rounded-2xl border bg-white shadow-sm hover:shadow-md transition-shadow">
+        <div className="border-b px-7 py-5">
+          <p className={`${type.caption} font-medium uppercase tracking-wide`}>
             Resumo do pedido
           </p>
-          <p className="mt-1 font-semibold text-gray-900">
+          <p className={`mt-2 ${type.cardTitle} text-gray-900`}>
             {service?.name ?? category ?? "Novo orçamento"}
           </p>
         </div>
 
-        <div className="space-y-4 p-5 text-sm">
-          {category && (
-            <Row label="Categoria" value={category} />
-          )}
+        <div className={`space-y-5 p-7 ${type.body}`}>
+          {category && <Row label="Categoria" value={category} />}
 
           {specs.length > 0 && (
             <div>
-              <p className="text-xs text-gray-400 mb-1">Especificações</p>
-              <ul className="space-y-0.5 text-gray-700">
+              <p className={`${type.caption} mb-2`}>Especificações</p>
+              <ul className="space-y-1 text-gray-700">
                 {specs.map((s) => (
                   <li key={s}>{s}</li>
                 ))}
@@ -102,10 +101,10 @@ export function PedidoResumoSidebar({
           )}
 
           {(city || state) && (
-            <div className="flex gap-2">
-              <MapPin className="h-4 w-4 shrink-0 text-gray-400 mt-0.5" />
+            <div className="flex gap-3">
+              <MapPin className="h-5 w-5 shrink-0 text-gray-400 mt-0.5" />
               <div>
-                <p className="text-xs text-gray-400">Local</p>
+                <p className={type.caption}>Local</p>
                 <p className="font-medium text-gray-900">
                   {city}{state ? ` / ${state}` : ""}
                 </p>
@@ -113,19 +112,19 @@ export function PedidoResumoSidebar({
             </div>
           )}
 
-          <div className="flex gap-2">
-            <Clock className="h-4 w-4 shrink-0 text-gray-400 mt-0.5" />
+          <div className="flex gap-3">
+            <Clock className="h-5 w-5 shrink-0 text-gray-400 mt-0.5" />
             <div>
-              <p className="text-xs text-gray-400">Prazo desejado</p>
+              <p className={type.caption}>Prazo desejado</p>
               <p className="font-medium text-gray-900">{deadlineDays} dias</p>
             </div>
           </div>
 
-          <div className="rounded-xl bg-gray-50 p-3 space-y-2">
-            <div className="flex gap-2">
-              <Users className="h-4 w-4 shrink-0 text-blue-600 mt-0.5" />
+          <div className="rounded-xl bg-gray-50 p-4 space-y-2">
+            <div className="flex gap-3">
+              <Users className="h-5 w-5 shrink-0 text-blue-600 mt-0.5" />
               <div>
-                <p className="text-xs text-gray-500">Gráficas na região</p>
+                <p className={type.caption}>Gráficas na região</p>
                 <p className="font-medium text-gray-900">
                   {state.length === 2
                     ? supplierCount !== null
@@ -137,24 +136,24 @@ export function PedidoResumoSidebar({
                 </p>
               </div>
             </div>
-            <p className="text-xs text-gray-500 pl-6">
+            <p className={`${type.caption} pl-8`}>
               Resposta média: <strong className="text-gray-700">4–24h</strong>
             </p>
           </div>
 
           {price && (
-            <div className="rounded-xl border border-green-100 bg-green-50 p-3">
-              <p className="text-xs text-green-700/80">Faixa de mercado</p>
-              <p className="text-lg font-bold text-green-700">
+            <div className="rounded-xl border border-green-100 bg-green-50 p-4">
+              <p className={`${type.caption} text-green-700/80`}>Faixa de mercado</p>
+              <p className={`${type.h3} text-green-700`}>
                 R$ {price.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
               </p>
-              <p className="text-xs text-green-600/70">Referência, não é proposta</p>
+              <p className={`${type.caption} text-green-600/70`}>Referência, não é proposta</p>
             </div>
           )}
         </div>
       </div>
 
-      <p className="mt-3 text-center text-xs text-gray-400">
+      <p className={`mt-4 text-center ${type.caption}`}>
         Gratuito · Login para publicar
       </p>
     </aside>
@@ -164,7 +163,7 @@ export function PedidoResumoSidebar({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-gray-400">{label}</p>
+      <p className={type.caption}>{label}</p>
       <p className="font-medium text-gray-900">{value}</p>
     </div>
   )

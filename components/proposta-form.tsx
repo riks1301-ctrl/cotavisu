@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ButtonLink } from "@/components/ui/button-link"
 import { CheckCircle, Loader2, Send } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
+import { type } from "@/lib/typography"
 
 export function PropostaForm({ requestId }: { requestId: string }) {
   const router = useRouter()
@@ -97,8 +98,8 @@ export function PropostaForm({ requestId }: { requestId: string }) {
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center">
         <CheckCircle className="mx-auto mb-2 h-10 w-10 text-green-500" />
-        <h3 className="font-semibold text-green-800">Proposta enviada!</h3>
-        <p className="mt-1 text-sm text-green-700">O comprador será notificado sobre sua proposta.</p>
+        <h3 className={`${type.cardTitle} text-green-800`}>Proposta enviada!</h3>
+        <p className={`mt-2 ${type.body} text-green-700`}>O comprador será notificado sobre sua proposta.</p>
       </div>
     )
   }
@@ -106,8 +107,8 @@ export function PropostaForm({ requestId }: { requestId: string }) {
   return (
     <Card id="proposta" className="border-blue-200">
       <CardContent className="p-6">
-        <h3 className="mb-4 text-lg font-semibold">Enviar proposta</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <h3 className={`mb-6 ${type.h3}`}>Enviar proposta</h3>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label htmlFor="price">Preço total (R$) *</Label>
@@ -157,7 +158,7 @@ export function PropostaForm({ requestId }: { requestId: string }) {
           </div>
 
           {error && (
-            <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>
+            <p className={`rounded-xl bg-red-50 p-4 ${type.body} text-red-600`}>{error}</p>
           )}
 
           <Button className="w-full" type="submit" disabled={loading}>
@@ -175,8 +176,8 @@ export function PropostaForm({ requestId }: { requestId: string }) {
 export function PropostaLoginPrompt() {
   return (
     <div id="proposta" className="rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 p-6 text-center">
-      <h3 className="mb-2 font-semibold">Você é fornecedor?</h3>
-      <p className="mb-4 text-sm text-gray-500">Crie uma conta ou entre para enviar sua proposta.</p>
+      <h3 className={`mb-3 ${type.cardTitle}`}>Você é fornecedor?</h3>
+      <p className={`mb-6 ${type.body} text-gray-500`}>Crie uma conta ou entre para enviar sua proposta.</p>
       <div className="flex justify-center gap-3">
         <ButtonLink href="/login" variant="outline">Entrar</ButtonLink>
         <ButtonLink href="/cadastro">Cadastrar grátis</ButtonLink>

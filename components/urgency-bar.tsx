@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-client"
 import { Users, Clock, TrendingUp, Zap } from "lucide-react"
+import { type } from "@/lib/typography"
 
 type Stats = {
   totalSuppliers: number
@@ -53,29 +54,23 @@ export function UrgencyBar() {
     : "Receba propostas em até 24h"
 
   return (
-    <div className="rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-
-        {/* Fornecedores */}
+    <div className="rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <div className="relative">
-            <div className={`h-2 w-2 rounded-full bg-green-500 ${pulse ? "animate-ping absolute" : ""}`} />
-            <div className="h-2 w-2 rounded-full bg-green-500" />
+            <div className={`h-2.5 w-2.5 rounded-full bg-green-500 ${pulse ? "animate-ping absolute" : ""}`} />
+            <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
           </div>
-          <Users className="h-4 w-4 text-blue-600" />
-          <span className="text-sm font-medium text-blue-800">{suppliersLabel}</span>
+          <Users className="h-5 w-5 text-blue-600" />
+          <span className={`${type.nav} font-medium text-blue-800`}>{suppliersLabel}</span>
         </div>
-
-        {/* Pedidos hoje */}
         <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-indigo-600" />
-          <span className="text-sm font-medium text-indigo-800">{todayLabel}</span>
+          <TrendingUp className="h-5 w-5 text-indigo-600" />
+          <span className={`${type.nav} font-medium text-indigo-800`}>{todayLabel}</span>
         </div>
-
-        {/* Tempo de resposta */}
         <div className="flex items-center gap-2">
-          <Zap className="h-4 w-4 text-orange-500" />
-          <span className="text-sm font-medium text-orange-700">{responseLabel}</span>
+          <Zap className="h-5 w-5 text-orange-500" />
+          <span className={`${type.nav} font-medium text-orange-700`}>{responseLabel}</span>
         </div>
 
       </div>
@@ -110,7 +105,7 @@ export function UrgencyInline({ city }: { city?: string }) {
   return (
     <div className="flex flex-wrap gap-2">
       {stats.suppliers > 0 && (
-        <span className="flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+        <span className={`flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-1.5 ${type.caption} font-medium text-green-700`}>
           <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
@@ -119,13 +114,13 @@ export function UrgencyInline({ city }: { city?: string }) {
         </span>
       )}
       {stats.today > 0 && (
-        <span className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
-          <TrendingUp className="h-3 w-3" />
+        <span className={`flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 ${type.caption} font-medium text-blue-700`}>
+          <TrendingUp className="h-4 w-4" />
           {stats.today} pedido{stats.today > 1 ? "s" : ""} criado{stats.today > 1 ? "s" : ""} hoje
         </span>
       )}
-      <span className="flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700">
-        <Zap className="h-3 w-3" />
+      <span className={`flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-1.5 ${type.caption} font-medium text-orange-700`}>
+        <Zap className="h-4 w-4" />
         Receba propostas em até 24h
       </span>
     </div>

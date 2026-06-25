@@ -16,6 +16,7 @@ import {
   MapPin, MessageCircle, Package, TrendingDown, XCircle,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
+import { layout, type } from "@/lib/typography"
 
 // Status labels
 const statusLabel: Record<string, { label: string; color: string }> = {
@@ -186,17 +187,17 @@ export default function PedidoPage() {
   const reqStatus = statusLabel[req.status] ?? statusLabel.open
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6">
-        <ButtonLink href="/pedidos" variant="ghost" size="sm">← Voltar para pedidos</ButtonLink>
+    <div className={`${layout.container} py-10`}>
+      <div className="mb-8">
+        <ButtonLink href="/pedidos" variant="ghost">← Voltar para pedidos</ButtonLink>
       </div>
 
       {/* Detalhes do pedido */}
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <Card className="mb-8">
+        <CardContent>
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <div className="mb-2 flex items-center gap-2 flex-wrap">
+              <div className="mb-3 flex items-center gap-2 flex-wrap">
                 <Badge variant="secondary">{req.category}</Badge>
                 <Badge variant="outline" className={reqStatus.color}>{reqStatus.label}</Badge>
                 {isClosed && acceptedProposal && (
@@ -205,36 +206,36 @@ export default function PedidoPage() {
                   </Badge>
                 )}
               </div>
-              <h1 className="text-xl font-bold">{req.service_type}</h1>
-              {req.buyer_name && <p className="text-sm text-gray-500">{req.buyer_name}</p>}
+              <h1 className={type.h2}>{req.service_type}</h1>
+              {req.buyer_name && <p className={`mt-2 ${type.body} text-gray-500`}>{req.buyer_name}</p>}
             </div>
-            <div className="text-sm text-gray-500">
+            <div className={`${type.body} text-gray-500`}>
               {isClosed
                 ? "Pedido encerrado"
                 : `Expira em ${new Date(req.expires_at).toLocaleDateString("pt-BR")}`}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+          <div className={`grid grid-cols-2 gap-4 ${type.body} sm:grid-cols-4`}>
             <div className="flex items-center gap-2 text-gray-600">
-              <Package className="h-4 w-4 text-gray-400" />
-              <div><p className="text-xs text-gray-400">Medidas</p><p className="font-medium">{req.width_m}m × {req.height_m}m</p></div>
+              <Package className="h-5 w-5 text-gray-400" />
+              <div><p className={type.caption}>Medidas</p><p className="font-medium">{req.width_m}m × {req.height_m}m</p></div>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <div><p className="text-xs text-gray-400">Quantidade</p><p className="font-medium">{req.quantity} unidades</p></div>
+              <div><p className={type.caption}>Quantidade</p><p className="font-medium">{req.quantity} unidades</p></div>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <MapPin className="h-4 w-4 text-gray-400" />
-              <div><p className="text-xs text-gray-400">Local</p><p className="font-medium">{req.city}/{req.state}</p></div>
+              <MapPin className="h-5 w-5 text-gray-400" />
+              <div><p className={type.caption}>Local</p><p className="font-medium">{req.city}/{req.state}</p></div>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <Clock className="h-4 w-4 text-gray-400" />
-              <div><p className="text-xs text-gray-400">Prazo desejado</p><p className="font-medium">{req.deadline_days} dias</p></div>
+              <Clock className="h-5 w-5 text-gray-400" />
+              <div><p className={type.caption}>Prazo desejado</p><p className="font-medium">{req.deadline_days} dias</p></div>
             </div>
           </div>
 
           {req.description && (
-            <p className="mt-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">{req.description}</p>
+            <p className={`mt-6 ${type.body} text-gray-600 bg-gray-50 rounded-xl p-4`}>{req.description}</p>
           )}
         </CardContent>
       </Card>
@@ -245,8 +246,8 @@ export default function PedidoPage() {
           <div className="flex items-center gap-3">
             <CheckCircle className="h-6 w-6 text-green-600 shrink-0" />
             <div>
-              <p className="font-semibold text-green-800">Proposta escolhida!</p>
-              <p className="text-sm text-green-700">
+              <p className={`${type.cardTitle} text-green-800`}>Proposta escolhida!</p>
+              <p className={`${type.body} text-green-700`}>
                 <strong>{acceptedProposal.supplier_profiles?.company_name}</strong> —{" "}
                 <strong>R$ {acceptedProposal.price_total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong> em{" "}
                 <strong>{acceptedProposal.delivery_days} dias</strong>.
@@ -270,28 +271,28 @@ export default function PedidoPage() {
 
       {/* Erro de aceite */}
       {acceptError && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className={`mb-6 rounded-xl border border-red-200 bg-red-50 p-4 ${type.body} text-red-700`}>
           <XCircle className="mr-2 inline h-4 w-4" />{acceptError}
         </div>
       )}
 
       {/* Resumo comparativo */}
       {pendingProposals.length > 0 && !isClosed && (
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div className="rounded-lg border bg-green-50 p-3 text-center">
-            <TrendingDown className="mx-auto mb-1 h-5 w-5 text-green-600" />
-            <p className="text-xs text-gray-500">Menor preço</p>
-            <p className="text-lg font-bold text-green-700">R$ {minPrice?.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+        <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="rounded-xl border bg-green-50 p-4 text-center">
+            <TrendingDown className="mx-auto mb-2 h-6 w-6 text-green-600" />
+            <p className={type.caption}>Menor preço</p>
+            <p className={`${type.cardTitle} text-green-700`}>R$ {minPrice?.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="rounded-lg border bg-blue-50 p-3 text-center">
-            <Clock className="mx-auto mb-1 h-5 w-5 text-blue-600" />
-            <p className="text-xs text-gray-500">Menor prazo</p>
-            <p className="text-lg font-bold text-blue-700">{minDays} dias</p>
+          <div className="rounded-xl border bg-blue-50 p-4 text-center">
+            <Clock className="mx-auto mb-2 h-6 w-6 text-blue-600" />
+            <p className={type.caption}>Menor prazo</p>
+            <p className={`${type.cardTitle} text-blue-700`}>{minDays} dias</p>
           </div>
-          <div className="rounded-lg border bg-purple-50 p-3 text-center col-span-2 sm:col-span-1">
-            <Award className="mx-auto mb-1 h-5 w-5 text-purple-600" />
-            <p className="text-xs text-gray-500">Propostas recebidas</p>
-            <p className="text-lg font-bold text-purple-700">{proposals.length}</p>
+          <div className="rounded-xl border bg-purple-50 p-4 text-center col-span-2 sm:col-span-1">
+            <Award className="mx-auto mb-2 h-6 w-6 text-purple-600" />
+            <p className={type.caption}>Propostas recebidas</p>
+            <p className={`${type.cardTitle} text-purple-700`}>{proposals.length}</p>
           </div>
         </div>
       )}
@@ -299,14 +300,14 @@ export default function PedidoPage() {
       {/* Propostas — tabela comparativa */}
       {proposals.length > 0 && (
         <div className="mb-6">
-          <h2 className="mb-3 text-lg font-semibold">
+          <h2 className={`mb-5 ${type.h3}`}>
             {isClosed ? "Propostas recebidas" : "Compare as propostas"}
           </h2>
 
           {/* Tabela desktop */}
           <div className="hidden sm:block overflow-x-auto rounded-xl border">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+            <table className={`w-full ${type.body}`}>
+              <thead className={`bg-gray-50 ${type.caption} uppercase`}>
                 <tr>
                   <th className="px-4 py-3 text-left">Fornecedor</th>
                   <th className="px-4 py-3 text-right">Preço total</th>
@@ -345,11 +346,11 @@ export default function PedidoPage() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div>
-                          <span className={`text-base font-bold ${isAccepted ? "text-green-700" : ""}`}>
+                          <span className={`${type.cardTitle} ${isAccepted ? "text-green-700" : ""}`}>
                             R$ {p.price_total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                           </span>
                           {isMinPrice && !isRejected && (
-                            <span className="ml-1 rounded-full bg-green-100 px-1.5 py-0.5 text-xs text-green-700">menor</span>
+                            <span className={`ml-1 rounded-full bg-green-100 px-2 py-0.5 ${type.caption} text-green-700`}>menor</span>
                           )}
                         </div>
                       </td>
@@ -357,14 +358,14 @@ export default function PedidoPage() {
                         <div>
                           <span className="font-medium">{p.delivery_days}d</span>
                           {isMinDays && !isRejected && (
-                            <span className="ml-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700">menor</span>
+                            <span className={`ml-1 rounded-full bg-blue-100 px-2 py-0.5 ${type.caption} text-blue-700`}>menor</span>
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-500 text-xs">{p.payment_terms || "—"}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs max-w-[140px] truncate" title={p.notes}>{p.notes || "—"}</td>
+                      <td className={`px-4 py-3 text-gray-500 ${type.caption}`}>{p.payment_terms || "—"}</td>
+                      <td className={`px-4 py-3 text-gray-500 ${type.caption} max-w-[180px] truncate`} title={p.notes}>{p.notes || "—"}</td>
                       <td className="px-4 py-3 text-center">
-                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${pStatus.color}`}>
+                        <span className={`rounded-full px-3 py-1 ${type.caption} font-medium ${pStatus.color}`}>
                           {pStatus.label}
                         </span>
                       </td>
@@ -405,28 +406,28 @@ export default function PedidoPage() {
                     <div className="mb-2 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <p className="font-semibold text-sm">{p.supplier_profiles?.company_name}</p>
+                          <p className={type.cardTitle}>{p.supplier_profiles?.company_name}</p>
                           {p.supplier_profiles?.is_premium && <VerifiedBadge />}
                         </div>
                         <StarRating rating={p.supplier_profiles?.rating_avg ?? 0} reviews={p.supplier_profiles?.total_reviews ?? 0} size="sm" />
                       </div>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${pStatus.color}`}>{pStatus.label}</span>
+                      <span className={`rounded-full px-3 py-1 ${type.caption} font-medium ${pStatus.color}`}>{pStatus.label}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                    <div className={`grid grid-cols-2 gap-3 ${type.body} mb-4`}>
                       <div>
-                        <p className="text-xs text-gray-400">Preço total</p>
-                        <p className="font-bold">R$ {p.price_total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                        {isMinPrice && <span className="text-xs text-green-600">✓ Menor preço</span>}
+                        <p className={type.caption}>Preço total</p>
+                        <p className={type.cardTitle}>R$ {p.price_total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                        {isMinPrice && <span className={`${type.caption} text-green-600`}>✓ Menor preço</span>}
                       </div>
                       <div>
-                        <p className="text-xs text-gray-400">Prazo</p>
-                        <p className="font-bold">{p.delivery_days} dias</p>
-                        {isMinDays && <span className="text-xs text-blue-600">✓ Menor prazo</span>}
+                        <p className={type.caption}>Prazo</p>
+                        <p className={type.cardTitle}>{p.delivery_days} dias</p>
+                        {isMinDays && <span className={`${type.caption} text-blue-600`}>✓ Menor prazo</span>}
                       </div>
                     </div>
 
-                    {p.notes && <p className="mb-3 text-xs text-gray-500 bg-gray-100 rounded p-2">{p.notes}</p>}
+                    {p.notes && <p className={`mb-4 ${type.cardDesc} bg-gray-100 rounded-lg p-3`}>{p.notes}</p>}
 
                     {isBuyerOwner && !isClosed && (
                       <Button
@@ -452,11 +453,11 @@ export default function PedidoPage() {
       {/* Estimativas modo prateleira — só mostra quando não há propostas */}
       {proposals.length === 0 && estimates.length > 0 && !isClosed && (
         <div className="mb-8">
-          <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
+          <div className={`mb-5 rounded-xl border border-yellow-200 bg-yellow-50 p-4 ${type.body} text-yellow-800`}>
             <Info className="mr-2 inline-block h-4 w-4" />
             Nenhuma proposta ainda. Veja os preços de referência do mercado enquanto aguarda.
           </div>
-          <h2 className="mb-3 text-base font-medium text-gray-500">Preços de referência</h2>
+          <h2 className={`mb-4 ${type.cardTitle} text-gray-500`}>Preços de referência</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {estimates.map((s) => (
               <Card key={s.id} className="border-dashed border-gray-300 bg-gray-50/50">
@@ -466,10 +467,10 @@ export default function PedidoPage() {
                   </Badge>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-sm">{s.name}</p>
-                      <p className="text-xs text-gray-400">Referência de mercado · ~{s.avg_days} dias</p>
+                      <p className={type.nav}>{s.name}</p>
+                      <p className={type.caption}>Referência de mercado · ~{s.avg_days} dias</p>
                     </div>
-                    <p className="text-lg font-bold text-gray-600">
+                    <p className={`${type.cardTitle} text-gray-600`}>
                       R$ {s.estimated_price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
                   </div>
@@ -493,8 +494,8 @@ export default function PedidoPage() {
 
       {/* Quando fechado e o usuário é fornecedor com proposta */}
       {isClosed && isSupplier && (
-        <div className="mt-6 rounded-xl border bg-gray-50 p-4 text-center text-gray-500">
-          <p className="text-sm">Este pedido está fechado. O comprador já selecionou uma proposta.</p>
+        <div className={`mt-8 rounded-xl border bg-gray-50 p-6 text-center text-gray-500 ${type.body}`}>
+          <p>Este pedido está fechado. O comprador já selecionou uma proposta.</p>
         </div>
       )}
 

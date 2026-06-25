@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { signIn } from "@/lib/auth"
+import { layout, type } from "@/lib/typography"
 
 function LoginForm() {
   const router = useRouter()
@@ -35,11 +36,11 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold">Entrar na plataforma</h1>
-          <p className="mt-1 text-sm text-gray-500">
+    <div className="flex min-h-[80vh] items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="mb-10 text-center">
+          <h1 className={type.h2}>Entrar na plataforma</h1>
+          <p className={`mt-3 ${type.body} text-gray-500`}>
             Não tem conta?{" "}
             <Link href="/cadastro" className="text-blue-600 hover:underline">
               Cadastre-se grátis
@@ -49,7 +50,7 @@ function LoginForm() {
 
         <Card>
           <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="email">E-mail</Label>
                 <Input
@@ -84,7 +85,7 @@ function LoginForm() {
               </div>
 
               {error && (
-                <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>
+                <p className="rounded-xl bg-red-50 p-4 type-body text-red-600">{error}</p>
               )}
 
               <Button className="w-full" type="submit" disabled={loading}>

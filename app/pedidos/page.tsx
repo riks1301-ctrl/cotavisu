@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Clock, MapPin, Package, Plus, Search, Star } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
+import { PageHeader } from "@/components/layout/page-header"
+import { layout, type } from "@/lib/typography"
 
 export default function PedidosPage() {
   const [requests, setRequests] = useState<any[]>([])
@@ -74,22 +76,20 @@ export default function PedidosPage() {
   }, [search, activeCategory, requests, userState])
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Pedidos abertos</h1>
-          <p className="text-gray-500 text-sm">
-            {filtered.length} pedido{filtered.length !== 1 ? "s" : ""} aguardando proposta
-            {userState && " · Sua região aparece primeiro"}
-          </p>
-        </div>
-        <ButtonLink href="/pedidos/novo">
-          <Plus className="mr-2 h-4 w-4" /> Criar pedido
+    <div className={`${layout.container} py-10`}>
+      <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <PageHeader
+          className="mb-0"
+          title="Pedidos abertos"
+          subtitle={`${filtered.length} pedido${filtered.length !== 1 ? "s" : ""} aguardando proposta${userState ? " · Sua região aparece primeiro" : ""}`}
+        />
+        <ButtonLink href="/pedidos/novo" className="shrink-0">
+          <Plus className="mr-2 h-5 w-5" /> Criar pedido
         </ButtonLink>
       </div>
 
       {/* Busca e filtro */}
-      <div className="mb-5 space-y-3">
+      <div className="mb-8 space-y-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
@@ -102,7 +102,7 @@ export default function PedidosPage() {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setActiveCategory(null)}
-            className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
+            className={`rounded-full border px-4 py-2 ${type.caption} font-medium transition-all ${
               !activeCategory ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300"
             }`}
           >
@@ -112,7 +112,7 @@ export default function PedidosPage() {
             <button
               key={cat}
               onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-              className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
+              className={`rounded-full border px-4 py-2 ${type.caption} font-medium transition-all ${
                 activeCategory === cat ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300"
               }`}
             >
@@ -128,65 +128,65 @@ export default function PedidosPage() {
           <div className="h-7 w-7 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="py-16 text-center text-gray-400">
-          <Package className="mx-auto mb-3 h-12 w-12 opacity-30" />
-          <p className="mb-2 font-medium">Nenhum pedido encontrado</p>
-          <p className="text-sm mb-4">Tente outro filtro ou crie o primeiro pedido.</p>
+        <div className="py-20 text-center text-gray-400">
+          <Package className="mx-auto mb-4 h-14 w-14 opacity-30" />
+          <p className={`mb-2 ${type.cardTitle}`}>Nenhum pedido encontrado</p>
+          <p className={`${type.body} mb-6`}>Tente outro filtro ou crie o primeiro pedido.</p>
           <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((req) => {
             const isSameState = userState && req.state === userState
             const expiresIn = Math.ceil((new Date(req.expires_at).getTime() - Date.now()) / 86400000)
             const isUrgent = expiresIn <= 2
 
             return (
-              <Card key={req.id} className={`hover:shadow-md transition-shadow ${isSameState ? "border-blue-200" : ""}`}>
-                <CardContent className="p-5">
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <Badge variant="secondary" className="text-xs">{req.category}</Badge>
+              <Card key={req.id} className={`hover:shadow-lg transition-shadow ${isSameState ? "border-blue-200" : ""}`}>
+                <CardContent>
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="secondary">{req.category}</Badge>
                       {isSameState && (
-                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 text-xs">
-                          <Star className="mr-1 h-2.5 w-2.5" /> Sua região
+                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                          <Star className="mr-1 h-3 w-3" /> Sua região
                         </Badge>
                       )}
                     </div>
-                    <span className={`text-xs ${isUrgent ? "text-red-500 font-medium" : "text-gray-400"}`}>
+                    <span className={`${type.caption} ${isUrgent ? "text-red-500 font-medium" : ""}`}>
                       {isUrgent ? `⚠ ${expiresIn}d restante${expiresIn !== 1 ? "s" : ""}` : `${expiresIn}d`}
                     </span>
                   </div>
 
-                  <h3 className="mb-1 text-base font-semibold">{req.service_type}</h3>
-                  {req.material && <p className="mb-1 text-xs text-gray-400">{req.material}</p>}
+                  <h3 className={`mb-2 ${type.cardTitle}`}>{req.service_type}</h3>
+                  {req.material && <p className={`mb-2 ${type.caption}`}>{req.material}</p>}
 
-                  <div className="mb-4 mt-2 grid grid-cols-2 gap-2 text-xs text-gray-500">
+                  <div className={`mb-5 mt-2 grid grid-cols-2 gap-3 ${type.caption}`}>
                     {req.width_m && req.height_m && (
-                      <div className="flex items-center gap-1">
-                        <Package className="h-3 w-3" />
+                      <div className="flex items-center gap-1.5">
+                        <Package className="h-4 w-4" />
                         {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)}cm · {req.quantity}un
                       </div>
                     )}
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4" />
                       {req.city}/{req.state}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-4 w-4" />
                       Prazo: {req.deadline_days} dias
                     </div>
                   </div>
 
                   {req.description && (
-                    <p className="mb-4 text-xs text-gray-400 line-clamp-2">{req.description}</p>
+                    <p className={`mb-5 ${type.cardDesc} line-clamp-2`}>{req.description}</p>
                   )}
 
-                  <div className="flex gap-2">
-                    <ButtonLink href={`/pedidos/${req.id}`} className="flex-1" size="sm" variant="outline">
+                  <div className="flex gap-3">
+                    <ButtonLink href={`/pedidos/${req.id}`} className="flex-1" variant="outline">
                       Ver detalhes
                     </ButtonLink>
-                    <ButtonLink href={`/pedidos/${req.id}#proposta`} className="flex-1" size="sm">
+                    <ButtonLink href={`/pedidos/${req.id}#proposta`} className="flex-1">
                       Enviar proposta
                     </ButtonLink>
                   </div>

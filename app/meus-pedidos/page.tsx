@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ButtonLink } from "@/components/ui/button-link"
 import { Clock, MapPin, Package, Plus } from "lucide-react"
 import { createClient } from "@/lib/supabase-client"
+import { PageHeader } from "@/components/layout/page-header"
+import { layout, type } from "@/lib/typography"
 
 const statusLabel: Record<string, { label: string; color: string }> = {
   open: { label: "Aberto", color: "bg-green-100 text-green-700" },
@@ -45,54 +47,55 @@ export default function MeusPedidosPage() {
   )
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Meus pedidos</h1>
-          <p className="text-gray-500">Acompanhe seus pedidos e propostas recebidas</p>
-        </div>
-        <ButtonLink href="/pedidos/novo">
-          <Plus className="mr-2 h-4 w-4" /> Novo pedido
+    <div className={`${layout.containerNarrow} py-10`}>
+      <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <PageHeader
+          className="mb-0"
+          title="Meus pedidos"
+          subtitle="Acompanhe seus pedidos e propostas recebidas"
+        />
+        <ButtonLink href="/pedidos/novo" className="shrink-0">
+          <Plus className="mr-2 h-5 w-5" /> Novo pedido
         </ButtonLink>
       </div>
 
       {requests.length === 0 ? (
-        <div className="py-20 text-center text-gray-400">
-          <Package className="mx-auto mb-3 h-12 w-12 opacity-30" />
-          <p className="mb-2 text-lg font-medium">Nenhum pedido criado ainda</p>
-          <p className="mb-6 text-sm">Crie seu primeiro pedido e receba propostas de fornecedores.</p>
+        <div className="py-24 text-center text-gray-400">
+          <Package className="mx-auto mb-4 h-14 w-14 opacity-30" />
+          <p className={`mb-2 ${type.cardTitle}`}>Nenhum pedido criado ainda</p>
+          <p className={`mb-8 ${type.body}`}>Crie seu primeiro pedido e receba propostas de fornecedores.</p>
           <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {requests.map((req) => {
             const st = statusLabel[req.status] ?? statusLabel.open
             return (
-              <Card key={req.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-5">
-                  <div className="mb-3 flex items-start justify-between">
+              <Card key={req.id} className="hover:shadow-lg transition-shadow">
+                <CardContent>
+                  <div className="mb-4 flex items-start justify-between">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="secondary" className="text-xs">{req.category}</Badge>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${st.color}`}>{st.label}</span>
+                      <Badge variant="secondary">{req.category}</Badge>
+                      <span className={`rounded-full px-3 py-1 ${type.caption} font-medium ${st.color}`}>{st.label}</span>
                     </div>
-                    <span className="text-xs text-gray-400">
+                    <span className={type.caption}>
                       {new Date(req.created_at).toLocaleDateString("pt-BR")}
                     </span>
                   </div>
 
-                  <h3 className="mb-1 font-semibold">{req.service_type}</h3>
+                  <h3 className={`mb-2 ${type.cardTitle}`}>{req.service_type}</h3>
 
-                  <div className="mb-4 grid grid-cols-2 gap-2 text-xs text-gray-500 sm:grid-cols-4">
-                    <div className="flex items-center gap-1">
-                      <Package className="h-3 w-3" /> {req.width_m}m × {req.height_m}m · {req.quantity}un
+                  <div className={`mb-5 grid grid-cols-2 gap-3 ${type.caption} sm:grid-cols-4`}>
+                    <div className="flex items-center gap-1.5">
+                      <Package className="h-4 w-4" /> {req.width_m}m × {req.height_m}m · {req.quantity}un
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" /> {req.city}/{req.state}
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4" /> {req.city}/{req.state}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" /> Prazo: {req.deadline_days} dias
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-4 w-4" /> Prazo: {req.deadline_days} dias
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div>
                       Expira: {new Date(req.expires_at).toLocaleDateString("pt-BR")}
                     </div>
                   </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { Award, Clock, TrendingDown, Zap } from "lucide-react"
+import { type } from "@/lib/typography"
 
 type PriceInfo = {
   total: number
@@ -52,69 +53,65 @@ export function PriceCards({ price, serviceName, quantity }: Props) {
   const bestRated = base * 1.10
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-gray-700">O que esperar de propostas reais</p>
-        <span className="text-xs text-gray-400">faixa estimada · referência de mercado</span>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className={`${type.cardTitle} text-gray-700`}>O que esperar de propostas reais</p>
+        <span className={type.caption}>faixa estimada · referência de mercado</span>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        {/* Mais barato */}
-        <div className="rounded-xl border-2 border-green-200 bg-green-50 p-3 text-center">
-          <TrendingDown className="mx-auto mb-1 h-4 w-4 text-green-600" />
-          <p className="text-xs font-medium text-green-700 mb-1">Mais barato</p>
-          <p className="text-base font-bold text-green-800">
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-xl border-2 border-green-200 bg-green-50 p-4 text-center">
+          <TrendingDown className="mx-auto mb-2 h-5 w-5 text-green-600" />
+          <p className={`${type.caption} font-medium text-green-700 mb-1`}>Mais barato</p>
+          <p className={`${type.cardTitle} text-green-800`}>
             R$ {fmt(cheapest)}
           </p>
-          <p className="text-xs text-green-600 mt-0.5">~{avgDays + 1} dias</p>
-          <p className="text-xs text-gray-400 mt-1">Sem pressa</p>
+          <p className={`${type.caption} text-green-600 mt-1`}>~{avgDays + 1} dias</p>
+          <p className={`${type.caption} mt-1`}>Sem pressa</p>
         </div>
 
-        {/* Mais rápido */}
-        <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-3 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-bl-lg font-medium">
+        <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-4 text-center relative overflow-hidden">
+          <div className={`absolute top-0 right-0 bg-blue-500 text-white ${type.caption} px-2 py-1 rounded-bl-lg font-medium`}>
             ⚡
           </div>
-          <Zap className="mx-auto mb-1 h-4 w-4 text-blue-600" />
-          <p className="text-xs font-medium text-blue-700 mb-1">Mais rápido</p>
-          <p className="text-base font-bold text-blue-800">
+          <Zap className="mx-auto mb-2 h-5 w-5 text-blue-600" />
+          <p className={`${type.caption} font-medium text-blue-700 mb-1`}>Mais rápido</p>
+          <p className={`${type.cardTitle} text-blue-800`}>
             R$ {fmt(fastest)}
           </p>
-          <p className="text-xs text-blue-600 mt-0.5 font-medium">
+          <p className={`${type.caption} text-blue-600 mt-1 font-medium`}>
             {avgDays <= 2 ? "amanhã" : `${Math.max(1, avgDays - 1)} dias`}
           </p>
-          <p className="text-xs text-gray-400 mt-1">Urgente</p>
+          <p className={`${type.caption} mt-1`}>Urgente</p>
         </div>
 
-        {/* Melhor avaliado */}
-        <div className="rounded-xl border-2 border-yellow-200 bg-yellow-50 p-3 text-center">
-          <Award className="mx-auto mb-1 h-4 w-4 text-yellow-600" />
-          <p className="text-xs font-medium text-yellow-700 mb-1">Mais bem avaliado</p>
-          <p className="text-base font-bold text-yellow-800">
+        <div className="rounded-xl border-2 border-yellow-200 bg-yellow-50 p-4 text-center">
+          <Award className="mx-auto mb-2 h-5 w-5 text-yellow-600" />
+          <p className={`${type.caption} font-medium text-yellow-700 mb-1`}>Mais bem avaliado</p>
+          <p className={`${type.cardTitle} text-yellow-800`}>
             R$ {fmt(bestRated)}
           </p>
-          <p className="text-xs text-yellow-600 mt-0.5">~{avgDays} dias</p>
-          <p className="text-xs text-gray-400 mt-1">⭐ 4.8+</p>
+          <p className={`${type.caption} text-yellow-600 mt-1`}>~{avgDays} dias</p>
+          <p className={`${type.caption} mt-1`}>⭐ 4.8+</p>
         </div>
       </div>
 
-      {/* Faixa total */}
-      <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 flex items-center justify-between">
+      <div className="rounded-xl bg-gray-50 border border-gray-200 p-4 flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-xs text-gray-500">Faixa esperada de propostas</p>
-          <p className="text-sm font-bold text-gray-800">
+          <p className={type.caption}>Faixa esperada de propostas</p>
+          <p className={`${type.nav} font-bold text-gray-800`}>
             R$ {fmt(cheapest)} — R$ {fmt(base * variation.high)}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-gray-500">Preço por {price.unitLabel}</p>
-          <p className="text-sm font-medium text-gray-700">
+          <p className={type.caption}>Preço por {price.unitLabel}</p>
+          <p className={`${type.nav} font-medium text-gray-700`}>
             R$ {fmt(price.perUnit * variation.low)} — R$ {fmt(price.perUnit * variation.high)}
           </p>
         </div>
       </div>
 
-      <p className="text-center text-xs text-gray-400">
+      <p className={`text-center ${type.caption}`}>
         💡 Publique o pedido e veja propostas reais em até 24h
       </p>
     </div>

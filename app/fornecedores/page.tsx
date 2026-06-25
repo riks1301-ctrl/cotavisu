@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"
 import { MapPin, Package, Search } from "lucide-react"
 import { StarRating, VerifiedBadge } from "@/components/trust-badges"
 import { createClient } from "@/lib/supabase-client"
+import { PageHeader } from "@/components/layout/page-header"
+import { layout, type } from "@/lib/typography"
 
 export default function FornecedoresPage() {
   const [suppliers, setSuppliers] = useState<any[]>([])
@@ -42,13 +44,13 @@ export default function FornecedoresPage() {
   }, [search, suppliers])
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Fornecedores</h1>
-        <p className="text-gray-500 text-sm">Empresas cadastradas na plataforma</p>
-      </div>
+    <div className={`${layout.container} py-10`}>
+      <PageHeader
+        title="Fornecedores"
+        subtitle="Empresas cadastradas na plataforma"
+      />
 
-      <div className="mb-6 relative">
+      <div className="mb-8 relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <Input className="pl-9" placeholder="Buscar por nome, cidade ou serviço..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
@@ -58,40 +60,40 @@ export default function FornecedoresPage() {
           <div className="h-7 w-7 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="py-16 text-center text-gray-400">
-          <Package className="mx-auto mb-3 h-12 w-12 opacity-30" />
-          <p className="font-medium mb-1">Nenhum fornecedor encontrado</p>
+        <div className="py-20 text-center text-gray-400">
+          <Package className="mx-auto mb-4 h-14 w-14 opacity-30" />
+          <p className={`font-medium mb-2 ${type.cardTitle}`}>Nenhum fornecedor encontrado</p>
           {suppliers.length === 0 ? (
             <>
-              <p className="text-sm mb-4">Os primeiros fornecedores aparecerão aqui quando se cadastrarem.</p>
+              <p className={`${type.body} mb-6`}>Os primeiros fornecedores aparecerão aqui quando se cadastrarem.</p>
               <ButtonLink href="/cadastro">Cadastrar como fornecedor</ButtonLink>
             </>
           ) : (
-            <p className="text-sm">Tente outra busca.</p>
+            <p className={type.body}>Tente outra busca.</p>
           )}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((s) => (
-            <Card key={s.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="mb-3 flex items-start justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-lg font-bold text-blue-600">
+            <Card key={s.id} className="hover:shadow-lg transition-shadow">
+              <CardContent>
+                <div className="mb-4 flex items-start justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold text-blue-600">
                     {s.company_name?.[0] ?? "?"}
                   </div>
                   {s.total_reviews === 0 && (
-                    <Badge variant="outline" className="text-xs">Novo</Badge>
+                    <Badge variant="outline">Novo</Badge>
                   )}
                 </div>
 
-                <div className="mb-1 flex items-center gap-2">
-                  <h3 className="font-semibold">{s.company_name}</h3>
+                <div className="mb-2 flex items-center gap-2">
+                  <h3 className={type.cardTitle}>{s.company_name}</h3>
                   {s.is_premium && <VerifiedBadge />}
                 </div>
 
                 {s.profiles && (
-                  <div className="mb-2 flex items-center gap-1 text-xs text-gray-500">
-                    <MapPin className="h-3 w-3" />{s.profiles.city}/{s.profiles.state}
+                  <div className={`mb-3 flex items-center gap-1.5 ${type.caption}`}>
+                    <MapPin className="h-4 w-4" />{s.profiles.city}/{s.profiles.state}
                   </div>
                 )}
 
@@ -100,18 +102,18 @@ export default function FornecedoresPage() {
                 </div>
 
                 {s.description && (
-                  <p className="mb-3 text-xs text-gray-500 line-clamp-2">{s.description}</p>
+                  <p className={`mb-4 ${type.cardDesc} line-clamp-2`}>{s.description}</p>
                 )}
 
                 {s.services && s.services.length > 0 && (
-                  <div className="mb-4 flex flex-wrap gap-1">
+                  <div className="mb-5 flex flex-wrap gap-2">
                     {s.services.slice(0, 4).map((svc: string) => (
-                      <Badge key={svc} variant="secondary" className="text-xs">{svc}</Badge>
+                      <Badge key={svc} variant="secondary">{svc}</Badge>
                     ))}
                   </div>
                 )}
 
-                <ButtonLink href={`/pedidos/novo`} className="w-full" size="sm" variant="outline">
+                <ButtonLink href={`/pedidos/novo`} className="w-full" variant="outline">
                   Pedir orçamento
                 </ButtonLink>
               </CardContent>
