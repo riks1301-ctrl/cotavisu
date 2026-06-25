@@ -54,11 +54,11 @@
   --text-subtitle: 1.375rem;
   --text-card-title: 1.375rem;
   --text-card-desc: 1.0625rem;
-  --text-body: 1.125rem;
-  --text-label: 1rem;
-  --text-caption: 1rem;
-  --text-nav: 1.125rem;
-  --text-button: 1.125rem;
+  --text-body: 1.1875rem;
+  --text-label: 1.0625rem;
+  --text-caption: 1.0625rem;
+  --text-nav: 1.1875rem;
+  --text-button: 1.1875rem;
 
   --leading-hero: 1.05;
   --leading-body: 1.7;
@@ -150,6 +150,13 @@
   }
   html {
     @apply font-sans antialiased;
+    font-size: 100%;
+  }
+  @media (min-width: 1024px) {
+    /* Base 19px em desktop — corrige sensação de UI 15–20% menor que SaaS premium */
+    html {
+      font-size: 118.75%;
+    }
   }
   h1 {
     @apply font-bold tracking-tight;
@@ -188,12 +195,13 @@
   }
 
   .type-h3 {
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     font-weight: 600;
     line-height: 1.3;
+    letter-spacing: -0.01em;
   }
   @media (min-width: 1024px) {
-    .type-h3 { font-size: 1.375rem; }
+    .type-h3 { font-size: 1.625rem; }
   }
 
   .type-subtitle {
@@ -224,8 +232,11 @@
   }
 
   .type-body {
-    font-size: 1.125rem;
-    line-height: 1.7;
+    font-size: 1.1875rem;
+    line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .type-body { font-size: 1.25rem; }
   }
 
   .type-body-lg {
@@ -258,8 +269,11 @@
   }
 
   .type-button {
-    font-size: 1.125rem;
-    font-weight: 500;
+    font-size: 1.1875rem;
+    font-weight: 600;
+  }
+  @media (min-width: 1024px) {
+    .type-button { font-size: 1.25rem; }
   }
 
   /* ─── Layout ─── */

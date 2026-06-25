@@ -24,14 +24,12 @@ export default function PedidosPage() {
     async function load() {
       const supabase = createClient()
 
-      // Busca estado do usuário logado para priorização geográfica
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const { data: prof } = await supabase.from("profiles").select("state").eq("id", user.id).single()
         setUserState(prof?.state ?? null)
       }
 
-      // Busca apenas pedidos abertos, ordenados por data
       const { data } = await supabase
         .from("service_requests")
         .select("*")
@@ -46,7 +44,6 @@ export default function PedidosPage() {
     load()
   }, [])
 
-  // Aplica filtros de busca e categoria
   useEffect(() => {
     let result = [...requests]
 
@@ -63,7 +60,6 @@ export default function PedidosPage() {
       result = result.filter((r) => r.category === activeCategory)
     }
 
-    // Prioriza mesma cidade/estado do fornecedor
     if (userState) {
       result.sort((a, b) => {
         const aMatch = a.state === userState ? 0 : 1
@@ -76,8 +72,8 @@ export default function PedidosPage() {
   }, [search, activeCategory, requests, userState])
 
   return (
-    <div className={`${layout.container} py-10`}>
-      <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className={`${layout.container} py-12`}>
+      <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <PageHeader
           className="mb-0"
           title="Pedidos abertos"
@@ -88,10 +84,9 @@ export default function PedidosPage() {
         </ButtonLink>
       </div>
 
-      {/* Busca e filtro */}
-      <div className="mb-10 space-y-5">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+      <div className="mb-12 space-y-6">
+        <div className="relative max-w-3xl">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
           <Input
             className="pl-12"
             placeholder="Buscar por serviço, categoria ou cidade..."
@@ -101,9 +96,10 @@ export default function PedidosPage() {
         </div>
         <div className="flex gap-3 flex-wrap">
           <button
+            type="button"
             onClick={() => setActiveCategory(null)}
-            className={`rounded-full border px-5 py-2.5 ${type.label} font-medium transition-all ${
-              !activeCategory ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300"
+            className={`rounded-full border px-6 py-3 ${type.nav} font-medium transition-all ${
+              !activeCategory ? "border-blue-600 bg-blue-50 text-blue-800" : "border-gray-300 text-gray-800 hover:border-gray-400"
             }`}
           >
             Todos
@@ -111,9 +107,10 @@ export default function PedidosPage() {
           {categories.map((cat) => (
             <button
               key={cat}
+              type="button"
               onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-              className={`rounded-full border px-5 py-2.5 ${type.label} font-medium transition-all ${
-                activeCategory === cat ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300"
+              className={`rounded-full border px-6 py-3 ${type.nav} font-medium transition-all ${
+                activeCategory === cat ? "border-blue-600 bg-blue-50 text-blue-800" : "border-gray-300 text-gray-800 hover:border-gray-400"
               }`}
             >
               {cat}
@@ -122,73 +119,79 @@ export default function PedidosPage() {
         </div>
       </div>
 
-      {/* Lista */}
       {loading ? (
         <div className="flex h-40 items-center justify-center">
-          <div className="h-7 w-7 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="py-20 text-center text-gray-400">
-          <Package className="mx-auto mb-4 h-14 w-14 opacity-30" />
-          <p className={`mb-2 ${type.cardTitle}`}>Nenhum pedido encontrado</p>
-          <p className={`${type.body} mb-6`}>Tente outro filtro ou crie o primeiro pedido.</p>
+        <div className="py-24 text-center">
+          <Package className="mx-auto mb-4 h-14 w-14 text-gray-300" />
+          <p className={`mb-2 ${type.h3}`}>Nenhum pedido encontrado</p>
+          <p className={`${type.body} mb-8 text-gray-600`}>Tente outro filtro ou crie o primeiro pedido.</p>
           <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid gap-8 lg:grid-cols-2 min-[1800px]:grid-cols-3">
           {filtered.map((req) => {
             const isSameState = userState && req.state === userState
             const expiresIn = Math.ceil((new Date(req.expires_at).getTime() - Date.now()) / 86400000)
             const isUrgent = expiresIn <= 2
 
             return (
-              <Card key={req.id} className={`hover:shadow-xl transition-all ${isSameState ? "border-blue-200 ring-blue-100" : ""}`}>
-                <CardContent className="flex flex-col gap-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="secondary">{req.category}</Badge>
+              <Card
+                key={req.id}
+                className={`hover:shadow-xl transition-all ${isSameState ? "border-blue-300 ring-1 ring-blue-100" : ""}`}
+              >
+                <CardContent className="flex flex-col gap-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="secondary" className="text-gray-900">{req.category}</Badge>
                       {isSameState && (
-                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-                          <Star className="mr-1 h-4 w-4" /> Sua região
+                        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                          <Star className="mr-1.5 h-4 w-4" /> Sua região
                         </Badge>
                       )}
                     </div>
-                    <span className={`shrink-0 ${type.label} ${isUrgent ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+                    <span className={`shrink-0 ${type.nav} font-semibold ${isUrgent ? "text-red-600" : "text-gray-700"}`}>
                       {isUrgent ? `⚠ ${expiresIn}d restante${expiresIn !== 1 ? "s" : ""}` : `${expiresIn}d`}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className={type.cardTitle}>{req.service_type}</h3>
-                    {req.material && <p className={`mt-2 ${type.cardDesc}`}>{req.material}</p>}
+                    <h3 className={`${type.h3} text-gray-950`}>{req.service_type}</h3>
+                    {req.material && (
+                      <p className={`mt-2 ${type.body} font-medium text-gray-800`}>{req.material}</p>
+                    )}
                   </div>
 
-                  <div className={`grid grid-cols-1 gap-2.5 ${type.body} text-gray-700 sm:grid-cols-2`}>
+                  <ul className={`space-y-3 ${type.body} text-gray-900`}>
                     {req.width_m && req.height_m && (
-                      <div className="flex items-center gap-2">
-                        <Package className="h-5 w-5 shrink-0 text-gray-400" />
-                        {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)}cm · {req.quantity}un
-                      </div>
+                      <li className="flex items-center gap-3">
+                        <Package className="h-5 w-5 shrink-0 text-gray-500" />
+                        {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)}cm · {req.quantity} un
+                      </li>
                     )}
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-5 w-5 shrink-0 text-gray-400" />
+                    <li className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 shrink-0 text-gray-500" />
                       {req.city}/{req.state}
-                    </div>
-                    <div className="flex items-center gap-2 sm:col-span-2">
-                      <Clock className="h-5 w-5 shrink-0 text-gray-400" />
-                      Prazo: {req.deadline_days} dias
-                    </div>
-                  </div>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <Clock className="h-5 w-5 shrink-0 text-gray-500" />
+                      Prazo desejado: {req.deadline_days} dias
+                    </li>
+                  </ul>
 
                   {req.description && (
-                    <p className={`${type.body} text-gray-600 line-clamp-3 leading-relaxed`}>{req.description}</p>
+                    <p className={`${type.body} text-gray-800 leading-relaxed line-clamp-4 border-t border-gray-100 pt-5`}>
+                      {req.description}
+                    </p>
                   )}
 
-                  <div className="mt-auto flex gap-3 pt-2">
-                    <ButtonLink href={`/pedidos/${req.id}`} className="flex-1" variant="outline">
+                  <div className="mt-auto grid grid-cols-2 gap-3 pt-2">
+                    <ButtonLink href={`/pedidos/${req.id}`} variant="outline" className="w-full">
                       Ver detalhes
                     </ButtonLink>
-                    <ButtonLink href={`/pedidos/${req.id}#proposta`} className="flex-1">
+                    <ButtonLink href={`/pedidos/${req.id}#proposta`} className="w-full">
                       Enviar proposta
                     </ButtonLink>
                   </div>
