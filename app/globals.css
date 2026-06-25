@@ -145,18 +145,12 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-size: var(--text-body);
-    line-height: var(--leading-body);
+    font-size: 18px;
+    line-height: 1.65;
   }
   html {
     @apply font-sans antialiased;
-    font-size: 100%;
-  }
-  @media (min-width: 1024px) {
-    /* Base 20px em desktop */
-    html {
-      font-size: 125%;
-    }
+    font-size: 16px;
   }
   h1 {
     @apply font-bold tracking-tight;
@@ -166,141 +160,130 @@
   }
 }
 
-/* ─── Design System: Tipografia ─── */
+/* ─── Design System: Tipografia (px fixos — legível em qualquer tela) ─── */
 @layer utilities {
   .type-hero {
-    font-size: 2.5rem;
+    font-size: 40px;
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.02em;
   }
   @media (min-width: 768px) {
-    .type-hero { font-size: 3.25rem; }
+    .type-hero { font-size: 52px; }
   }
   @media (min-width: 1024px) {
-    .type-hero { font-size: 4rem; }
+    .type-hero { font-size: 64px; }
   }
 
   .type-h2 {
-    font-size: 1.75rem;
+    font-size: 32px;
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.02em;
   }
   @media (min-width: 768px) {
-    .type-h2 { font-size: 2rem; }
+    .type-h2 { font-size: 40px; }
   }
   @media (min-width: 1024px) {
-    .type-h2 { font-size: 2.75rem; }
+    .type-h2 { font-size: 48px; }
   }
 
   .type-h3 {
-    font-size: 1.5rem;
+    font-size: 26px;
     font-weight: 600;
     line-height: 1.3;
     letter-spacing: -0.01em;
   }
   @media (min-width: 1024px) {
-    .type-h3 { font-size: 1.875rem; }
+    .type-h3 { font-size: 32px; }
   }
 
   .type-subtitle {
-    font-size: 1.25rem;
+    font-size: 20px;
     font-weight: 500;
     line-height: 1.5;
   }
   @media (min-width: 768px) {
-    .type-subtitle { font-size: 1.5rem; }
+    .type-subtitle { font-size: 24px; }
   }
 
   .type-card-title {
-    font-size: 1.375rem;
+    font-size: 24px;
     font-weight: 600;
     line-height: 1.35;
   }
   @media (min-width: 1024px) {
-    .type-card-title { font-size: 1.5rem; }
+    .type-card-title { font-size: 28px; }
   }
 
   .type-card-desc {
-    font-size: 1.0625rem;
+    font-size: 18px;
     line-height: 1.6;
-    color: oklch(0.42 0 0);
+    color: oklch(0.35 0 0);
   }
   @media (min-width: 1024px) {
-    .type-card-desc { font-size: 1.125rem; }
+    .type-card-desc { font-size: 20px; }
   }
 
   .type-body {
-    font-size: 1.25rem;
+    font-size: 18px;
     line-height: 1.6;
   }
   @media (min-width: 1024px) {
-    .type-body { font-size: 1.375rem; }
+    .type-body { font-size: 20px; }
   }
 
   .type-body-lg {
-    font-size: 1.1875rem;
+    font-size: 20px;
     line-height: 1.65;
+  }
+  @media (min-width: 1024px) {
+    .type-body-lg { font-size: 22px; }
   }
 
   .type-label {
-    font-size: 1rem;
+    font-size: 17px;
     font-weight: 500;
     line-height: 1.4;
   }
   @media (min-width: 1024px) {
-    .type-label { font-size: 1.0625rem; }
+    .type-label { font-size: 18px; }
   }
 
   .type-caption {
-    font-size: 1rem;
+    font-size: 16px;
     line-height: 1.5;
-    color: oklch(0.45 0 0);
+    color: oklch(0.4 0 0);
   }
   @media (min-width: 1024px) {
-    .type-caption { font-size: 1.0625rem; }
+    .type-caption { font-size: 17px; }
   }
 
   .type-nav {
-    font-size: 1.1875rem;
+    font-size: 18px;
     font-weight: 500;
     line-height: 1.4;
   }
   @media (min-width: 1024px) {
-    .type-nav { font-size: 1.3125rem; }
+    .type-nav { font-size: 20px; }
   }
 
   .type-button {
-    font-size: 1.25rem;
+    font-size: 18px;
     font-weight: 600;
   }
   @media (min-width: 1024px) {
-    .type-button { font-size: 1.375rem; }
+    .type-button { font-size: 20px; }
   }
 
-  /* ─── Layout ─── */
+  /* ─── Layout: usa toda a largura da tela ─── */
   .app-container {
+    width: 100%;
+    max-width: none;
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
-    max-width: min(1840px, calc(100vw - 2rem));
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  @media (min-width: 640px) {
-    .app-container {
-      max-width: min(1840px, calc(100vw - 3rem));
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-  @media (min-width: 1024px) {
-    .app-container {
-      max-width: min(1920px, calc(100vw - 4rem));
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
+    padding-left: clamp(1.25rem, 4vw, 3rem);
+    padding-right: clamp(1.25rem, 4vw, 3rem);
   }
 
   .app-container-narrow {

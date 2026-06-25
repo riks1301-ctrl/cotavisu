@@ -73,14 +73,14 @@ export default function PedidosPage() {
 
   return (
     <div className={`${layout.container} py-12`}>
-      <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <PageHeader
           className="mb-0"
           title="Pedidos abertos"
           subtitle={`${filtered.length} pedido${filtered.length !== 1 ? "s" : ""} aguardando proposta${userState ? " · Sua região aparece primeiro" : ""}`}
         />
-        <ButtonLink href="/pedidos/novo" className="shrink-0">
-          <Plus className="mr-2 h-5 w-5" /> Criar pedido
+        <ButtonLink href="/pedidos/novo" size="lg" className="shrink-0">
+          <Plus className="mr-2 h-6 w-6" /> Criar pedido
         </ButtonLink>
       </div>
 
@@ -88,18 +88,18 @@ export default function PedidosPage() {
         <div className="relative">
           <Search className="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-500" />
           <Input
-            className="pl-14"
+            className="pl-14 text-[20px] placeholder:text-[20px]"
             placeholder="Buscar por serviço, categoria ou cidade..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex flex-wrap gap-3">
           <button
             type="button"
             onClick={() => setActiveCategory(null)}
-            className={`rounded-full border px-6 py-3 ${type.nav} font-medium transition-all ${
-              !activeCategory ? "border-blue-600 bg-blue-50 text-blue-800" : "border-gray-300 text-gray-800 hover:border-gray-400"
+            className={`rounded-full border-2 px-6 py-3 text-[18px] font-semibold transition-all lg:text-[20px] ${
+              !activeCategory ? "border-blue-600 bg-blue-50 text-blue-900" : "border-gray-300 text-gray-900 hover:border-gray-400"
             }`}
           >
             Todos
@@ -109,8 +109,8 @@ export default function PedidosPage() {
               key={cat}
               type="button"
               onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-              className={`rounded-full border px-6 py-3 ${type.nav} font-medium transition-all ${
-                activeCategory === cat ? "border-blue-600 bg-blue-50 text-blue-800" : "border-gray-300 text-gray-800 hover:border-gray-400"
+              className={`rounded-full border-2 px-6 py-3 text-[18px] font-semibold transition-all lg:text-[20px] ${
+                activeCategory === cat ? "border-blue-600 bg-blue-50 text-blue-900" : "border-gray-300 text-gray-900 hover:border-gray-400"
               }`}
             >
               {cat}
@@ -121,17 +121,18 @@ export default function PedidosPage() {
 
       {loading ? (
         <div className="flex h-40 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-24 text-center">
-          <Package className="mx-auto mb-4 h-14 w-14 text-gray-300" />
-          <p className={`mb-2 ${type.h3}`}>Nenhum pedido encontrado</p>
-          <p className={`${type.body} mb-8 text-gray-600`}>Tente outro filtro ou crie o primeiro pedido.</p>
-          <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
+          <Package className="mx-auto mb-4 h-16 w-16 text-gray-300" />
+          <p className={`mb-3 ${type.h3}`}>Nenhum pedido encontrado</p>
+          <p className={`${type.body} mb-8 text-gray-700`}>Tente outro filtro ou crie o primeiro pedido.</p>
+          <ButtonLink href="/pedidos/novo" size="lg">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2">
+        /* Sempre 2 colunas no desktop — cards largos, texto legível */
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {filtered.map((req) => {
             const isSameState = userState && req.state === userState
             const expiresIn = Math.ceil((new Date(req.expires_at).getTime() - Date.now()) / 86400000)
@@ -140,35 +141,41 @@ export default function PedidosPage() {
             return (
               <Card
                 key={req.id}
-                className={`hover:shadow-xl transition-all ${isSameState ? "border-blue-300 ring-1 ring-blue-100" : ""}`}
+                className={`hover:shadow-xl transition-all ${isSameState ? "border-2 border-blue-300" : ""}`}
               >
-                <CardContent className="flex flex-col gap-6">
+                <CardContent className="flex flex-col gap-7">
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary" className="text-gray-900">{req.category}</Badge>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge variant="secondary" className="text-[17px] lg:text-[18px] text-gray-900">
+                        {req.category}
+                      </Badge>
                       {isSameState && (
-                        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                          <Star className="mr-1.5 h-4 w-4" /> Sua região
+                        <Badge className="bg-blue-100 text-[17px] text-blue-900 hover:bg-blue-100 lg:text-[18px]">
+                          <Star className="mr-1.5 h-5 w-5" /> Sua região
                         </Badge>
                       )}
                     </div>
-                    <span className={`shrink-0 ${type.nav} font-semibold ${isUrgent ? "text-red-600" : "text-gray-700"}`}>
+                    <span className={`shrink-0 text-[18px] font-bold lg:text-[20px] ${isUrgent ? "text-red-600" : "text-gray-800"}`}>
                       {isUrgent ? `⚠ ${expiresIn}d restante${expiresIn !== 1 ? "s" : ""}` : `${expiresIn}d`}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className={`${type.h3} text-gray-950`}>{req.service_type}</h3>
+                    <h3 className="text-[26px] font-bold leading-tight text-gray-950 lg:text-[32px]">
+                      {req.service_type}
+                    </h3>
                     {req.material && (
-                      <p className={`mt-2 ${type.body} font-medium text-gray-800`}>{req.material}</p>
+                      <p className="mt-3 text-[20px] font-semibold leading-snug text-gray-800 lg:text-[22px]">
+                        {req.material}
+                      </p>
                     )}
                   </div>
 
-                  <ul className={`space-y-3 ${type.body} text-gray-900`}>
+                  <ul className="space-y-4 text-[20px] text-gray-900 lg:text-[22px]">
                     {req.width_m && req.height_m && (
                       <li className="flex items-center gap-3">
                         <Package className="h-6 w-6 shrink-0 text-gray-500" />
-                        {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)}cm · {req.quantity} un
+                        {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)} cm · {req.quantity} un
                       </li>
                     )}
                     <li className="flex items-center gap-3">
@@ -182,16 +189,16 @@ export default function PedidosPage() {
                   </ul>
 
                   {req.description && (
-                    <p className={`${type.body} text-gray-800 leading-relaxed line-clamp-4 border-t border-gray-100 pt-5`}>
+                    <p className="border-t border-gray-200 pt-6 text-[20px] leading-relaxed text-gray-900 lg:text-[22px]">
                       {req.description}
                     </p>
                   )}
 
-                  <div className="mt-auto grid grid-cols-2 gap-3 pt-2">
-                    <ButtonLink href={`/pedidos/${req.id}`} variant="outline" className="w-full">
+                  <div className="mt-auto grid grid-cols-2 gap-4 pt-2">
+                    <ButtonLink href={`/pedidos/${req.id}`} size="lg" variant="outline" className="w-full">
                       Ver detalhes
                     </ButtonLink>
-                    <ButtonLink href={`/pedidos/${req.id}#proposta`} className="w-full">
+                    <ButtonLink href={`/pedidos/${req.id}#proposta`} size="lg" className="w-full">
                       Enviar proposta
                     </ButtonLink>
                   </div>

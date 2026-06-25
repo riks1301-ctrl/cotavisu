@@ -24,7 +24,7 @@ const buttonVariants = cva(
           "h-14 gap-2.5 px-7 has-data-[icon=inline-end]:pr-6 has-data-[icon=inline-start]:pl-6",
         xs: "h-8 gap-1 rounded-lg px-3 text-sm in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3.5",
         sm: "h-11 gap-1.5 rounded-xl px-4 text-base in-data-[slot=button-group]:rounded-xl has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-4",
-        lg: "h-14 gap-2.5 px-8 text-lg has-data-[icon=inline-end]:pr-6 has-data-[icon=inline-start]:pl-6",
+        lg: "h-16 gap-3 px-10 text-[20px] has-data-[icon=inline-end]:pr-8 has-data-[icon=inline-start]:pl-8",
         icon: "size-[3.25rem]",
         "icon-xs":
           "size-8 rounded-lg in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-4",
