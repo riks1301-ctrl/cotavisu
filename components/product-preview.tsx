@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { type } from "@/lib/typography"
 
 type Props = {
   serviceName: string
@@ -97,16 +97,16 @@ export function ProductPreview({ serviceName, widthCm, heightCm, quantity, attri
     : null
 
   return (
-    <div className="rounded-xl border bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Preview</span>
+    <div className="rounded-2xl border bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <span className={`${type.label} font-semibold uppercase tracking-wide text-gray-600`}>Preview</span>
         {w > 0 && h > 0 && (
-          <span className="text-xs text-gray-400">{w}×{h}cm · {qty}un</span>
+          <span className={type.caption}>{w}×{h}cm · {qty}un</span>
         )}
       </div>
 
       {/* Canvas de preview */}
-      <div className="flex items-center justify-center" style={{ minHeight: 160 }}>
+      <div className="flex items-center justify-center" style={{ minHeight: 200 }}>
         <div className="relative">
           {/* Sombra de quantidade */}
           {qty > 1 && (
@@ -160,7 +160,7 @@ export function ProductPreview({ serviceName, widthCm, heightCm, quantity, attri
               <div className="flex flex-col items-center gap-1 opacity-60">
                 <span className="text-xl">{icon}</span>
                 {w > 0 && h > 0 && (
-                  <span className="text-xs font-mono text-gray-500">
+                  <span className={`${type.caption} font-mono`}>
                     {w}×{h}
                   </span>
                 )}
@@ -201,7 +201,7 @@ export function ProductPreview({ serviceName, widthCm, heightCm, quantity, attri
           {Object.entries(attributes).slice(0, 4).map(([key, val]) => {
             const label = val.replace(/_/g, " ")
             return (
-              <span key={key} className="rounded-full bg-white border border-gray-200 px-2 py-0.5 text-xs text-gray-600 shadow-sm">
+              <span key={key} className={`rounded-full border border-gray-200 bg-white px-3 py-1 ${type.caption} shadow-sm`}>
                 {label}
               </span>
             )
@@ -210,7 +210,7 @@ export function ProductPreview({ serviceName, widthCm, heightCm, quantity, attri
       )}
 
       {(!w || !h) && (
-        <p className="mt-2 text-center text-xs text-gray-400">
+        <p className={`mt-3 text-center ${type.caption}`}>
           Preencha as medidas para ver o preview proporcional
         </p>
       )}

@@ -9,14 +9,16 @@ type Props = VariantProps<typeof buttonVariants> & {
   children: React.ReactNode
   target?: string
   rel?: string
+  onClick?: () => void
 }
 
-export function ButtonLink({ href, className, variant, size, children, target, rel }: Props) {
+export function ButtonLink({ href, className, variant, size, children, target, rel, onClick }: Props) {
   return (
     <Link
       href={href}
       target={target}
       rel={rel}
+      onClick={onClick}
       className={cn(buttonVariants({ variant, size, className }))}
     >
       {children}

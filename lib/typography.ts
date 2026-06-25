@@ -1,12 +1,13 @@
 /**
- * Design System tipográfico — CotaVisu
- * Use estas classes em vez de tamanhos fixos espalhados.
+ * CotaVisu Design System v3 — Marketplace Premium
+ * Use SEMPRE estas classes. Nunca text-sm, text-xs ou tamanhos fixos soltos.
  */
 export const type = {
   hero: "type-hero",
   h2: "type-h2",
   h3: "type-h3",
   subtitle: "type-subtitle",
+  heroSub: "type-hero-sub",
   cardTitle: "type-card-title",
   cardDesc: "type-card-desc",
   body: "type-body",
@@ -23,4 +24,5 @@ export const layout = {
   section: "section-y",
   stack: "stack-block",
   titleGap: "title-gap",
+  cardPremium: "card-premium",
 } as const

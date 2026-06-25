@@ -196,7 +196,7 @@ export default function AdminPage() {
                   <tr key={s.id} className={`hover:bg-gray-50 ${!s.is_active ? "opacity-50" : ""}`}>
                     <td className="px-4 py-3 font-medium">{s.name}</td>
                     <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">
-                      {s.service_categories && <Badge variant="secondary" className="text-xs">{s.service_categories.name}</Badge>}
+                      {s.service_categories && <Badge variant="secondary">{s.service_categories.name}</Badge>}
                     </td>
                     <td className="px-4 py-3 text-right font-mono">R$ {s.base_price}/{s.unit}</td>
                     <td className="px-4 py-3 text-right text-gray-500 hidden sm:table-cell">{s.avg_days}d</td>

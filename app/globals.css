@@ -47,27 +47,27 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* Tipografia — escala premium */
-  --text-hero: 2.5rem;
-  --text-h2: 1.75rem;
-  --text-h3: 1.375rem;
+  /* Tipografia v3 — marketplace premium */
+  --text-hero: 2.25rem;
+  --text-h2: 2.75rem;
   --text-subtitle: 1.375rem;
-  --text-card-title: 1.375rem;
-  --text-card-desc: 1.0625rem;
-  --text-body: 1.25rem;
-  --text-label: 1.0625rem;
-  --text-caption: 1.0625rem;
-  --text-nav: 1.1875rem;
-  --text-button: 1.1875rem;
+  --text-card-title: 1.5rem;
+  --text-card-desc: 1.125rem;
+  --text-body: 1.125rem;
+  --text-label: 1rem;
+  --text-caption: 1rem;
+  --text-nav: 1.25rem;
+  --text-button: 1.125rem;
 
   --leading-hero: 1.05;
   --leading-body: 1.7;
-  --leading-subtitle: 1.5;
+  --leading-subtitle: 1.6;
 
-  --spacing-section: 5rem;
-  --spacing-card: 1.75rem;
+  --spacing-section: 6rem;
+  --spacing-card: 2rem;
   --spacing-title: 1.5rem;
   --spacing-block: 3rem;
+  --container-max: 1600px;
 }
 
 :root {
@@ -145,12 +145,12 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-size: 18px;
-    line-height: 1.65;
+    font-size: 20px;
+    line-height: 1.7;
   }
   html {
     @apply font-sans antialiased;
-    font-size: 16px;
+    font-size: 18px;
   }
   h1 {
     @apply font-bold tracking-tight;
@@ -160,55 +160,72 @@
   }
 }
 
-/* ─── Design System: Tipografia (px fixos — legível em qualquer tela) ─── */
+/* ─── Design System v3 — Marketplace Premium ─── */
 @layer utilities {
+  /* Hero H1: 36 → 44 → 56 → 72px */
   .type-hero {
-    font-size: 40px;
+    font-size: 36px;
     font-weight: 700;
     line-height: 1.05;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
   @media (min-width: 768px) {
-    .type-hero { font-size: 52px; }
+    .type-hero { font-size: 44px; }
   }
   @media (min-width: 1024px) {
-    .type-hero { font-size: 64px; }
+    .type-hero { font-size: 56px; }
+  }
+  @media (min-width: 1280px) {
+    .type-hero { font-size: 72px; }
   }
 
+  /* Títulos de seção: 44px desktop */
   .type-h2 {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.1;
     letter-spacing: -0.02em;
   }
   @media (min-width: 768px) {
-    .type-h2 { font-size: 40px; }
+    .type-h2 { font-size: 36px; }
   }
   @media (min-width: 1024px) {
-    .type-h2 { font-size: 48px; }
+    .type-h2 { font-size: 44px; }
   }
 
   .type-h3 {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.25;
     letter-spacing: -0.01em;
   }
   @media (min-width: 1024px) {
-    .type-h3 { font-size: 32px; }
+    .type-h3 { font-size: 26px; }
   }
 
+  /* Subtítulo: 22px */
   .type-subtitle {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
-    line-height: 1.5;
+    line-height: 1.6;
   }
   @media (min-width: 768px) {
-    .type-subtitle { font-size: 24px; }
+    .type-subtitle { font-size: 22px; }
   }
 
+  /* Hero subtitle: 24px */
+  .type-hero-sub {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+  @media (min-width: 768px) {
+    .type-hero-sub { font-size: 24px; }
+  }
+
+  /* Card title: 26–28px */
   .type-card-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     line-height: 1.35;
   }
@@ -216,88 +233,79 @@
     .type-card-title { font-size: 28px; }
   }
 
+  /* Card description: 20px */
   .type-card-desc {
-    font-size: 18px;
-    line-height: 1.6;
-    color: oklch(0.35 0 0);
-  }
-  @media (min-width: 1024px) {
-    .type-card-desc { font-size: 20px; }
+    font-size: 20px;
+    line-height: 1.65;
+    color: oklch(0.22 0 0);
   }
 
+  /* Body: 20px */
   .type-body {
-    font-size: 18px;
-    line-height: 1.6;
-  }
-  @media (min-width: 1024px) {
-    .type-body { font-size: 20px; }
+    font-size: 20px;
+    line-height: 1.7;
   }
 
   .type-body-lg {
-    font-size: 20px;
+    font-size: 22px;
     line-height: 1.65;
   }
-  @media (min-width: 1024px) {
-    .type-body-lg { font-size: 22px; }
-  }
 
+  /* Label: 18px+ */
   .type-label {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 500;
     line-height: 1.4;
   }
   @media (min-width: 1024px) {
-    .type-label { font-size: 18px; }
+    .type-label { font-size: 20px; }
   }
 
+  /* Auxiliar: mínimo 18px */
   .type-caption {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5;
-    color: oklch(0.4 0 0);
-  }
-  @media (min-width: 1024px) {
-    .type-caption { font-size: 17px; }
+    color: oklch(0.35 0 0);
   }
 
+  /* Menu: 20–22px */
   .type-nav {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     line-height: 1.4;
   }
   @media (min-width: 1024px) {
-    .type-nav { font-size: 20px; }
+    .type-nav { font-size: 22px; }
   }
 
+  /* Botão: 20px */
   .type-button {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
   }
-  @media (min-width: 1024px) {
-    .type-button { font-size: 20px; }
-  }
 
-  /* ─── Layout: usa toda a largura da tela ─── */
+  /* ─── Layout ─── */
   .app-container {
     width: 100%;
-    max-width: none;
+    max-width: 1600px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: clamp(1.25rem, 4vw, 3rem);
-    padding-right: clamp(1.25rem, 4vw, 3rem);
+    padding-left: clamp(1.5rem, 4vw, 3.5rem);
+    padding-right: clamp(1.5rem, 4vw, 3.5rem);
   }
 
   .app-container-narrow {
+    width: 100%;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
-    max-width: 720px;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-left: clamp(1.5rem, 4vw, 3rem);
+    padding-right: clamp(1.5rem, 4vw, 3rem);
   }
 
   .section-y {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
   }
 
   .stack-block {
@@ -308,5 +316,16 @@
 
   .title-gap {
     margin-bottom: 1.5rem;
+  }
+
+  .card-premium {
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px oklch(0 0 0 / 0.06);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card-premium:hover {
+    box-shadow: 0 12px 40px oklch(0 0 0 / 0.1);
+    transform: translateY(-2px);
   }
 }

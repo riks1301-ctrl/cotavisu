@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, ChevronRight, Minus, Plus, Trash2, ShoppingBag } from "lucide-react"
 import { pdvItems, type PDVItem } from "@/lib/service-options"
+import { type } from "@/lib/typography"
 
 export type PDVItemSelected = {
   item: PDVItem
@@ -84,18 +85,18 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-2">
           <ShoppingBag className="h-5 w-5 text-blue-600" />
-          <h3 className="font-semibold text-lg">Kit PDV — Resumo</h3>
+          <h3 className={type.cardTitle}>Kit PDV — Resumo</h3>
           <Badge className="bg-blue-100 text-blue-700">{configured.length} item{configured.length > 1 ? "s" : ""}</Badge>
         </div>
 
         <div className="space-y-2">
           {configured.map((c, i) => (
-            <div key={i} className="flex items-center justify-between rounded-lg border bg-gray-50 p-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{c.item.icon}</span>
+            <div key={i} className="flex items-center justify-between rounded-xl border bg-gray-50 p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{c.item.icon}</span>
                 <div>
-                  <p className="font-medium text-sm">{c.item.name}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className={`font-semibold ${type.body}`}>{c.item.name}</p>
+                  <p className={type.caption}>
                     {c.widthCm && c.heightCm ? `${c.widthCm}×${c.heightCm}cm · ` : c.widthCm ? `${c.widthCm}cm · ` : ""}
                     {c.quantity} un
                   </p>
@@ -138,7 +139,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
       <div className="space-y-4">
         {/* Progress */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">
+          <span className={type.caption}>
             Configurando {configIndex + 1} de {items.length}:
           </span>
           <span className="font-semibold">{current.item.icon} {current.item.name}</span>
@@ -150,7 +151,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
           />
         </div>
 
-        <p className="text-xs text-gray-400">{current.item.description}</p>
+        <p className={type.caption}>{current.item.description}</p>
 
         {/* Dimensões */}
         {current.item.unit !== "unit" ? (
@@ -166,7 +167,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
                   onChange={(e) => setCurrent({ ...current, widthCm: e.target.value })}
                   className="pr-10"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${type.caption}`}>cm</span>
               </div>
             </div>
             {current.item.heightLabel && (
@@ -181,16 +182,16 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
                     onChange={(e) => setCurrent({ ...current, heightCm: e.target.value })}
                     className="pr-10"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                  <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${type.caption}`}>cm</span>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <p className="text-xs text-gray-400 bg-gray-50 rounded-lg p-2">
+          <p className={`${type.caption} rounded-xl bg-gray-50 p-4`}>
             {current.item.widthLabel && (
               <span>
-                <Label htmlFor="width-unit" className="text-xs">{current.item.widthLabel}</Label>
+                <Label htmlFor="width-unit">{current.item.widthLabel}</Label>
                 <div className="relative mt-1">
                   <Input
                     id="width-unit"
@@ -200,7 +201,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
                     onChange={(e) => setCurrent({ ...current, widthCm: e.target.value })}
                     className="pr-10"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">cm</span>
+                  <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${type.caption}`}>cm</span>
                 </div>
               </span>
             )}
@@ -214,7 +215,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
             <button
               type="button"
               onClick={() => setCurrent({ ...current, quantity: String(Math.max(1, parseInt(current.quantity) - 1)) })}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border text-lg font-bold hover:bg-gray-50"
+              className="flex h-12 w-12 items-center justify-center rounded-xl border text-xl font-bold hover:bg-gray-50"
             >-</button>
             <Input
               type="number"
@@ -226,7 +227,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
             <button
               type="button"
               onClick={() => setCurrent({ ...current, quantity: String(parseInt(current.quantity) + 1) })}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border text-lg font-bold hover:bg-gray-50"
+              className="flex h-12 w-12 items-center justify-center rounded-xl border text-xl font-bold hover:bg-gray-50"
             >+</button>
           </div>
         </div>
@@ -243,7 +244,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
                   key={opt.id}
                   type="button"
                   onClick={() => setAttr(attr.key, opt.id)}
-                  className={`rounded-lg border px-3 py-2 text-left text-sm transition-all ${
+                  className={`rounded-xl border px-4 py-3 text-left ${type.body} transition-all ${
                     current.attributes[attr.key] === opt.id
                       ? "border-blue-500 bg-blue-50 font-medium text-blue-700"
                       : "hover:border-gray-300 hover:bg-gray-50"
@@ -278,13 +279,13 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="font-medium text-gray-700 mb-1">
+        <p className={`${type.cardTitle} mb-2 text-gray-800`}>
           🏪 Kit PDV — Selecione os materiais que precisa
         </p>
-        <p className="text-sm text-gray-400">Pode selecionar vários e configurar cada um separadamente</p>
+        <p className={type.caption}>Pode selecionar vários e configurar cada um separadamente</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {pdvItems.map((item) => {
           const selected = selectedIds.includes(item.id)
           return (
@@ -292,7 +293,7 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
               key={item.id}
               type="button"
               onClick={() => toggleItem(item.id)}
-              className={`relative flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center text-sm transition-all ${
+              className={`relative flex flex-col items-center gap-2 rounded-2xl border p-5 text-center ${type.body} transition-all ${
                 selected
                   ? "border-blue-500 bg-blue-50 text-blue-700"
                   : "hover:border-gray-300 hover:bg-gray-50"
@@ -303,17 +304,17 @@ export function PDVBuilder({ onConfirm, onBack }: Props) {
                   <CheckCircle className="h-3 w-3 text-white" />
                 </div>
               )}
-              <span className="text-2xl">{item.icon}</span>
-              <span className="font-medium leading-tight">{item.name}</span>
-              <span className="text-xs text-gray-400 leading-tight">{item.description}</span>
+              <span className="text-3xl">{item.icon}</span>
+              <span className={`font-semibold leading-tight ${type.label}`}>{item.name}</span>
+              <span className={`${type.caption} leading-snug`}>{item.description}</span>
             </button>
           )
         })}
       </div>
 
       {selectedIds.length > 0 && (
-        <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 flex items-center justify-between">
-          <span className="text-sm text-blue-700 font-medium">
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 flex items-center justify-between">
+          <span className={`${type.body} font-semibold text-blue-800`}>
             {selectedIds.length} item{selectedIds.length > 1 ? "s" : ""} selecionado{selectedIds.length > 1 ? "s" : ""}
           </span>
           <div className="flex gap-1 flex-wrap">

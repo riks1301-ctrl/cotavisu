@@ -1,7 +1,9 @@
 "use client"
 
 import { MessageCircle } from "lucide-react"
+import { ButtonLink } from "@/components/ui/button-link"
 import { buildWhatsAppUrl, formatWhatsAppDisplay } from "@/lib/whatsapp"
+import { type } from "@/lib/typography"
 
 type Props = {
   supplierName: string
@@ -28,32 +30,33 @@ export function WhatsAppHandoff({
   const waUrl = buildWhatsAppUrl(supplierWhatsApp, message)
 
   return (
-    <div className="mb-6 rounded-xl border border-green-200 bg-green-50 p-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-8 rounded-2xl border-2 border-green-200 bg-green-50 p-8">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-semibold text-green-800">Proposta escolhida — próximo passo</p>
-          <p className="mt-1 text-sm text-green-700">
+          <p className={`${type.cardTitle} text-green-900`}>Proposta escolhida — próximo passo</p>
+          <p className={`mt-3 ${type.body} text-green-800`}>
             Fale com <strong>{supplierName}</strong> no WhatsApp para fechar os detalhes.
             A negociação e o pagamento são diretos com a gráfica.
           </p>
-          <p className="mt-2 text-xs text-green-600">
+          <p className={`mt-3 ${type.caption} text-green-700`}>
             WhatsApp: {formatWhatsAppDisplay(supplierWhatsApp)}
           </p>
           {buyerWhatsApp && (
-            <p className="mt-1 text-xs text-green-600">
+            <p className={`mt-2 ${type.caption} text-green-700`}>
               Seu número ({formatWhatsAppDisplay(buyerWhatsApp)}) foi compartilhado com o fornecedor.
             </p>
           )}
         </div>
-        <a
+        <ButtonLink
           href={waUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+          size="lg"
+          className="shrink-0 bg-green-600 hover:bg-green-700"
         >
-          <MessageCircle className="mr-2 h-4 w-4" />
+          <MessageCircle className="mr-2 h-5 w-5" />
           Abrir WhatsApp
-        </a>
+        </ButtonLink>
       </div>
     </div>
   )

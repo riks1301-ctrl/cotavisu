@@ -47,7 +47,7 @@ export default function MeusPedidosPage() {
   )
 
   return (
-    <div className={`${layout.containerNarrow} py-10`}>
+    <div className={`${layout.container} py-14`}>
       <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
           className="mb-0"

@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { isValidWhatsApp } from "@/lib/whatsapp"
+import { type } from "@/lib/typography"
 
 type Props = {
   open: boolean
@@ -41,7 +42,7 @@ export function AcceptProposalDialog({
           <DialogTitle>Confirmar escolha da proposta</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 text-sm text-gray-600">
+        <div className={`space-y-6 ${type.body} text-gray-700`}>
           <p>
             Você está escolhendo a proposta de <strong>{supplierName}</strong>.
             As demais propostas serão recusadas e o pedido será fechado.
@@ -59,7 +60,7 @@ export function AcceptProposalDialog({
               value={buyerWhatsApp}
               onChange={(e) => onBuyerWhatsAppChange(e.target.value)}
             />
-            <p className="mt-1 text-xs text-gray-400">
+            <p className={`mt-2 ${type.caption}`}>
               Será compartilhado com a gráfica escolhida para continuidade do orçamento.
             </p>
           </div>

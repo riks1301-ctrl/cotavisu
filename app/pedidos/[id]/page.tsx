@@ -462,7 +462,7 @@ export default function PedidoPage() {
             {estimates.map((s) => (
               <Card key={s.id} className="border-dashed border-gray-300 bg-gray-50/50">
                 <CardContent className="p-4">
-                  <Badge variant="outline" className="mb-2 text-xs text-gray-500 border-gray-300">
+                  <Badge variant="outline" className="mb-3">
                     <Info className="mr-1 h-3 w-3" /> Preço estimado
                   </Badge>
                   <div className="flex items-center justify-between">

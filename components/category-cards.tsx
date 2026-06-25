@@ -80,13 +80,13 @@ export function CategoryCards() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((cat) => (
             <Link
               key={cat.slug}
               href={`/pedidos/novo?categoria=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl shadow-md transition-all hover:shadow-xl hover:-translate-y-1"
-              style={{ aspectRatio: "4/3" }}
+              className="group relative overflow-hidden rounded-2xl shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1"
+              style={{ aspectRatio: "5/4" }}
             >
               {/* Imagem de fundo */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -101,7 +101,7 @@ export function CategoryCards() {
               <div className={`absolute inset-0 bg-gradient-to-t ${cat.color} to-black/10`} />
 
               {/* Conteúdo */}
-              <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
+              <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
                 <p className={`${type.cardTitle} text-white drop-shadow leading-tight`}>
                   {cat.name}
                 </p>
@@ -123,7 +123,7 @@ export function CategoryCards() {
           <Link
             href="/pedidos/novo"
             className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-blue-300 bg-blue-50 transition-all hover:border-blue-500 hover:bg-blue-100"
-            style={{ aspectRatio: "4/3" }}
+            style={{ aspectRatio: "5/4" }}
           >
             <span className="text-3xl mb-2">➕</span>
             <p className={`font-bold text-blue-700 ${type.nav}`}>Outro serviço</p>

@@ -159,7 +159,7 @@ export default function PerfilPage() {
   }
 
   return (
-    <div className={`${layout.containerNarrow} py-10`}>
+    <div className={`${layout.container} py-14`}>
       <PageHeader
         title="Meu perfil"
         subtitle={
@@ -210,7 +210,7 @@ export default function PerfilPage() {
                         key={s}
                         type="button"
                         onClick={() => toggleService(s)}
-                        className={`rounded-lg border px-3 py-1.5 text-xs transition-all ${
+                        className={`rounded-xl border px-4 py-2.5 ${type.caption} transition-all ${
                           services.includes(s)
                             ? "border-blue-500 bg-blue-50 text-blue-700"
                             : "hover:border-gray-300"

@@ -8,10 +8,10 @@ type Props = {
 
 export function PageHeader({ title, subtitle, className = "" }: Props) {
   return (
-    <div className={`mb-10 ${className}`}>
+    <div className={`title-gap ${className}`}>
       <h1 className={type.h2}>{title}</h1>
       {subtitle && (
-        <p className={`mt-4 ${type.subtitle} text-gray-700`}>{subtitle}</p>
+        <p className={`mt-5 ${type.subtitle} text-gray-600`}>{subtitle}</p>
       )}
     </div>
   )

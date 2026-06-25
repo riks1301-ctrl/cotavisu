@@ -34,42 +34,42 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 section-y text-white">
-        <div className={`${layout.container} max-w-5xl text-center`}>
-          <Badge className="mb-6 bg-blue-500 text-base text-white hover:bg-blue-500 px-4 py-1.5">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 section-y text-white">
+        <div className="pointer-events-none absolute inset-0 opacity-20">
+          <div className="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-blue-300/20 blur-3xl" />
+        </div>
+        <div className={`${layout.container} relative text-center`}>
+          <Badge className="mb-8 bg-white/20 px-5 py-2 text-[18px] text-white hover:bg-white/20 backdrop-blur">
             Plataforma beta — cadastro gratuito
           </Badge>
-          <h1 className={`${type.hero} mb-6 text-white`}>
+          <h1 className={`${type.hero} mb-8 text-white`}>
             Compare orçamentos de<br />
             <span className="text-blue-200">comunicação visual</span>
           </h1>
-          <p className={`${type.subtitle} mb-10 text-blue-100`}>
+          <p className={`${type.heroSub} mx-auto mb-12 max-w-3xl text-blue-50`}>
             Crie um pedido, compare propostas reais de gráficas da sua região e escolha
             o melhor preço ou prazo — a negociação segue direto com quem você escolher.
           </p>
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <ButtonLink href="/pedidos/novo" size="lg" className="min-w-[240px] bg-white text-blue-700 hover:bg-blue-50">
-              Criar pedido grátis <ArrowRight className="ml-2 h-5 w-5" />
+          <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center">
+            <ButtonLink href="/pedidos/novo" size="lg" className="min-w-[280px] bg-white text-blue-800 shadow-xl hover:bg-blue-50">
+              Criar pedido grátis <ArrowRight className="ml-2 h-6 w-6" />
             </ButtonLink>
-            <ButtonLink href="/pedidos" size="lg" variant="outline" className="min-w-[240px] border-blue-300 text-white hover:bg-blue-700">
+            <ButtonLink href="/pedidos" size="lg" variant="outline" className="min-w-[280px] border-2 border-white/40 text-white hover:bg-white/10">
               Ver pedidos abertos
             </ButtonLink>
           </div>
-          <p className={`mt-6 ${type.body} text-blue-200`}>
+          <p className={`mt-8 ${type.body} text-blue-100`}>
             Ver pedidos abertos sem cadastro. Login gratuito para publicar e escolher propostas.
           </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             {[
               "📊 Compare preços lado a lado",
               "🔒 Dados protegidos (LGPD)",
-              "💬 Feche no WhatsApp com a gráfica",
+              "💬 Feche no WhatsApp",
               "🆓 Grátis para quem pede",
             ].map((item) => (
-              <span
-                key={item}
-                className="rounded-full bg-white/15 px-4 py-2 text-base text-blue-50 backdrop-blur"
-              >
+              <span key={item} className={`rounded-full bg-white/15 px-6 py-3 ${type.body} text-white backdrop-blur`}>
                 {item}
               </span>
             ))}
@@ -187,7 +187,7 @@ export default async function Home() {
               <ButtonLink href="/pedidos/novo">Criar o primeiro pedido</ButtonLink>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-2">
               {recent.map((req) => (
                 <Card key={req.id}>
                   <CardContent>
@@ -200,7 +200,7 @@ export default async function Home() {
                       {req.width_m && req.height_m ? `${req.width_m}m × ${req.height_m}m · ` : ""}
                       {req.quantity} {req.quantity > 1 ? "unidades" : "unidade"}
                     </p>
-                    <div className="mb-5 flex items-center gap-2 type-caption">
+                    <div className={`mb-5 flex items-center gap-2 ${type.caption}`}>
                       <Clock className="h-4 w-4" />
                       <span>Prazo: {req.deadline_days} dias</span>
                     </div>
@@ -237,7 +237,7 @@ export default async function Home() {
       <TrustSection />
 
       <section className="section-y">
-        <div className={`${layout.container} max-w-3xl text-center`}>
+        <div className={`${layout.container} text-center`}>
           <h2 className={`mb-6 ${type.h2}`}>Pronto para começar?</h2>
           <p className={`mb-10 ${type.subtitle} text-gray-500`}>Crie seu primeiro pedido agora e receba propostas de fornecedores.</p>
           <ButtonLink href="/pedidos/novo" size="lg">
