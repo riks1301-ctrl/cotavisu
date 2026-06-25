@@ -56,7 +56,7 @@ export function Navbar() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 lg:h-11 lg:w-11">
               <Eye className="h-5 w-5 text-white lg:h-6 lg:w-6" />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-gray-900 lg:text-[1.75rem]">
+            <span className={`${type.h3} font-bold tracking-tight text-gray-900`}>
               CotaVisu
             </span>
             <Badge variant="secondary" className="hidden sm:inline-flex">Beta</Badge>

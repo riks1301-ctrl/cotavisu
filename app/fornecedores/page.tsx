@@ -73,7 +73,7 @@ export default function FornecedoresPage() {
           )}
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2">
           {filtered.map((s) => (
             <Card key={s.id} className="hover:shadow-xl transition-all">
               <CardContent className="flex flex-col gap-5">

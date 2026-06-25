@@ -85,10 +85,10 @@ export default function PedidosPage() {
       </div>
 
       <div className="mb-12 space-y-6">
-        <div className="relative max-w-3xl">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
+        <div className="relative">
+          <Search className="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-500" />
           <Input
-            className="pl-12"
+            className="pl-14"
             placeholder="Buscar por serviço, categoria ou cidade..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -131,7 +131,7 @@ export default function PedidosPage() {
           <ButtonLink href="/pedidos/novo">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="grid gap-8 lg:grid-cols-2 min-[1800px]:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2">
           {filtered.map((req) => {
             const isSameState = userState && req.state === userState
             const expiresIn = Math.ceil((new Date(req.expires_at).getTime() - Date.now()) / 86400000)
@@ -167,16 +167,16 @@ export default function PedidosPage() {
                   <ul className={`space-y-3 ${type.body} text-gray-900`}>
                     {req.width_m && req.height_m && (
                       <li className="flex items-center gap-3">
-                        <Package className="h-5 w-5 shrink-0 text-gray-500" />
+                        <Package className="h-6 w-6 shrink-0 text-gray-500" />
                         {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)}cm · {req.quantity} un
                       </li>
                     )}
                     <li className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 shrink-0 text-gray-500" />
+                      <MapPin className="h-6 w-6 shrink-0 text-gray-500" />
                       {req.city}/{req.state}
                     </li>
                     <li className="flex items-center gap-3">
-                      <Clock className="h-5 w-5 shrink-0 text-gray-500" />
+                      <Clock className="h-6 w-6 shrink-0 text-gray-500" />
                       Prazo desejado: {req.deadline_days} dias
                     </li>
                   </ul>

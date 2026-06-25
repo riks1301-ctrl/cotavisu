@@ -54,7 +54,7 @@
   --text-subtitle: 1.375rem;
   --text-card-title: 1.375rem;
   --text-card-desc: 1.0625rem;
-  --text-body: 1.1875rem;
+  --text-body: 1.25rem;
   --text-label: 1.0625rem;
   --text-caption: 1.0625rem;
   --text-nav: 1.1875rem;
@@ -153,9 +153,9 @@
     font-size: 100%;
   }
   @media (min-width: 1024px) {
-    /* Base 19px em desktop — corrige sensação de UI 15–20% menor que SaaS premium */
+    /* Base 20px em desktop */
     html {
-      font-size: 118.75%;
+      font-size: 125%;
     }
   }
   h1 {
@@ -191,26 +191,26 @@
     .type-h2 { font-size: 2rem; }
   }
   @media (min-width: 1024px) {
-    .type-h2 { font-size: 2.5rem; }
+    .type-h2 { font-size: 2.75rem; }
   }
 
   .type-h3 {
-    font-size: 1.375rem;
+    font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.3;
     letter-spacing: -0.01em;
   }
   @media (min-width: 1024px) {
-    .type-h3 { font-size: 1.625rem; }
+    .type-h3 { font-size: 1.875rem; }
   }
 
   .type-subtitle {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.5;
   }
   @media (min-width: 768px) {
-    .type-subtitle { font-size: 1.375rem; }
+    .type-subtitle { font-size: 1.5rem; }
   }
 
   .type-card-title {
@@ -232,11 +232,11 @@
   }
 
   .type-body {
-    font-size: 1.1875rem;
-    line-height: 1.65;
+    font-size: 1.25rem;
+    line-height: 1.6;
   }
   @media (min-width: 1024px) {
-    .type-body { font-size: 1.25rem; }
+    .type-body { font-size: 1.375rem; }
   }
 
   .type-body-lg {
@@ -263,17 +263,20 @@
   }
 
   .type-nav {
-    font-size: 1.125rem;
+    font-size: 1.1875rem;
     font-weight: 500;
     line-height: 1.4;
   }
+  @media (min-width: 1024px) {
+    .type-nav { font-size: 1.3125rem; }
+  }
 
   .type-button {
-    font-size: 1.1875rem;
+    font-size: 1.25rem;
     font-weight: 600;
   }
   @media (min-width: 1024px) {
-    .type-button { font-size: 1.25rem; }
+    .type-button { font-size: 1.375rem; }
   }
 
   /* ─── Layout ─── */
@@ -281,15 +284,23 @@
     margin-left: auto;
     margin-right: auto;
     width: 100%;
-    max-width: 1400px;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    max-width: min(1840px, calc(100vw - 2rem));
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   @media (min-width: 640px) {
-    .app-container { padding-left: 2rem; padding-right: 2rem; }
+    .app-container {
+      max-width: min(1840px, calc(100vw - 3rem));
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
   }
   @media (min-width: 1024px) {
-    .app-container { padding-left: 2.5rem; padding-right: 2.5rem; }
+    .app-container {
+      max-width: min(1920px, calc(100vw - 4rem));
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
   }
 
   .app-container-narrow {
