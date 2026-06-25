@@ -20,6 +20,7 @@ type Suggestion = {
 type Props = {
   onApply: (suggestion: Suggestion) => void
   onSkip: () => void
+  large?: boolean
 }
 
 const confiancaStyle = {
@@ -35,7 +36,7 @@ const examples = [
   "Envelopamento do meu carro com vinil preto fosco",
 ]
 
-export function AISuggestion({ onApply, onSkip }: Props) {
+export function AISuggestion({ onApply, onSkip, large = false }: Props) {
   const [text, setText] = useState("")
   const [loading, setLoading] = useState(false)
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null)
@@ -66,18 +67,20 @@ export function AISuggestion({ onApply, onSkip }: Props) {
   return (
     <div className="space-y-4">
       {/* Campo de descrição */}
-      <div className="rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 p-4">
+      <div className={`rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 ${large ? "p-6 sm:p-8" : "p-4"}`}>
         <div className="mb-3 flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-blue-600" />
-          <span className="font-semibold text-blue-800">Descreva o que você precisa</span>
+          <Sparkles className={`text-blue-600 ${large ? "h-6 w-6" : "h-5 w-5"}`} />
+          <span className={`font-semibold text-blue-800 ${large ? "text-lg" : ""}`}>
+            Descreva o que você precisa
+          </span>
           <Badge className="bg-blue-100 text-blue-700 text-xs hover:bg-blue-100">IA</Badge>
         </div>
         <Textarea
           placeholder="Ex: preciso de um banner para a fachada da minha loja de roupas, 3 metros de largura..."
           value={text}
           onChange={(e) => { setText(e.target.value); setSuggestion(null) }}
-          rows={3}
-          className="bg-white resize-none"
+          rows={large ? 5 : 3}
+          className={`bg-white resize-none ${large ? "text-base min-h-[140px]" : ""}`}
           onKeyDown={(e) => { if (e.key === "Enter" && e.ctrlKey) handleSuggest() }}
         />
 
@@ -97,9 +100,9 @@ export function AISuggestion({ onApply, onSkip }: Props) {
           </div>
         )}
 
-        <div className="mt-3 flex gap-2">
+        <div className={`mt-3 flex gap-2 ${large ? "flex-col sm:flex-row" : ""}`}>
           <Button
-            className="flex-1"
+            className={`flex-1 ${large ? "h-12 text-base" : ""}`}
             onClick={handleSuggest}
             disabled={loading || text.length < 5}
           >
