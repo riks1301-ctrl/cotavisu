@@ -179,38 +179,38 @@
     .type-hero { font-size: 72px; }
   }
 
-  /* Títulos de seção: 44px desktop */
+  /* Títulos de seção: 48px desktop */
   .type-h2 {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.02em;
   }
   @media (min-width: 768px) {
-    .type-h2 { font-size: 36px; }
+    .type-h2 { font-size: 40px; }
   }
   @media (min-width: 1024px) {
-    .type-h2 { font-size: 44px; }
+    .type-h2 { font-size: 48px; }
   }
 
   .type-h3 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
   @media (min-width: 1024px) {
-    .type-h3 { font-size: 26px; }
+    .type-h3 { font-size: 30px; }
   }
 
-  /* Subtítulo: 22px */
+  /* Subtítulo: 24px */
   .type-subtitle {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     line-height: 1.6;
   }
   @media (min-width: 768px) {
-    .type-subtitle { font-size: 22px; }
+    .type-subtitle { font-size: 24px; }
   }
 
   /* Hero subtitle: 24px */
@@ -237,7 +237,7 @@
   .type-card-desc {
     font-size: 20px;
     line-height: 1.65;
-    color: oklch(0.22 0 0);
+    color: oklch(0.28 0 0);
   }
 
   /* Body: 20px */
@@ -258,17 +258,17 @@
     line-height: 1.4;
   }
   @media (min-width: 1024px) {
-    .type-label { font-size: 20px; }
+    .type-label { font-size: 19px; }
   }
 
   /* Auxiliar: mínimo 18px */
   .type-caption {
     font-size: 18px;
     line-height: 1.5;
-    color: oklch(0.35 0 0);
+    color: oklch(0.38 0 0);
   }
 
-  /* Menu: 20–22px */
+  /* Menu: 22px */
   .type-nav {
     font-size: 20px;
     font-weight: 500;

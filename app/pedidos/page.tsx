@@ -85,7 +85,7 @@ export default function PedidosPage() {
                 key={cat}
                 type="button"
                 onClick={() => setActiveCategory(isAll ? null : (activeCategory === cat ? null : cat))}
-                className={`rounded-full border-2 px-6 py-3 ${type.nav} font-semibold transition-all ${
+                className={`rounded-full border-2 px-7 py-3.5 ${type.body} font-semibold transition-all ${
                   active ? "border-blue-600 bg-blue-50 text-blue-900" : "border-gray-300 text-gray-800 hover:border-gray-400"
                 }`}
               >
@@ -108,7 +108,7 @@ export default function PedidosPage() {
           <ButtonLink href="/pedidos/novo" size="lg">Criar pedido</ButtonLink>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-10 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {filtered.map((req) => {
             const isSameState = userState && req.state === userState
             const expiresIn = Math.ceil((new Date(req.expires_at).getTime() - Date.now()) / 86400000)
@@ -133,24 +133,24 @@ export default function PedidosPage() {
                     <h3 className={`${type.cardTitle} text-gray-950`}>{req.service_type}</h3>
                     {req.material && <p className={`mt-3 ${type.body} font-medium text-gray-800`}>{req.material}</p>}
                   </div>
-                  <ul className={`space-y-4 ${type.bodyLg} font-medium text-gray-900`}>
+                  <ul className={`space-y-4 ${type.bodyLg} text-gray-900`}>
                     {req.width_m && req.height_m && (
                       <li className="flex items-center gap-3">
-                        <Package className="h-7 w-7 shrink-0 text-gray-600" />
+                        <Package className="h-7 w-7 shrink-0 text-gray-500" />
                         {(req.width_m * 100).toFixed(0)}×{(req.height_m * 100).toFixed(0)} cm · {req.quantity} un
                       </li>
                     )}
                     <li className="flex items-center gap-3">
-                      <MapPin className="h-7 w-7 shrink-0 text-gray-600" />
+                      <MapPin className="h-7 w-7 shrink-0 text-gray-500" />
                       {req.city}/{req.state}
                     </li>
                     <li className="flex items-center gap-3">
-                      <Clock className="h-7 w-7 shrink-0 text-gray-600" />
+                      <Clock className="h-7 w-7 shrink-0 text-gray-500" />
                       Prazo desejado: {req.deadline_days} dias
                     </li>
                   </ul>
                   {req.description && (
-                    <p className={`border-t border-gray-200 pt-6 ${type.bodyLg} leading-relaxed text-gray-900`}>
+                    <p className={`border-t border-gray-200 pt-6 ${type.cardDesc} leading-relaxed text-gray-800`}>
                       {req.description}
                     </p>
                   )}
